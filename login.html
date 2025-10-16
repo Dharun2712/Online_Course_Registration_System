@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CourseHub | Login</title>
+<style>
+/* ===== GLOBAL ===== */
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+body {background:linear-gradient(135deg,#0056d2,#007bff); color:#333; min-height:100vh; display:flex; justify-content:center; align-items:center;}
+a {text-decoration:none; color:inherit;}
+input, button {font-family:'Poppins',sans-serif;}
+
+/* ===== CONTAINER ===== */
+.login-container {
+  background:#fff; border-radius:15px; padding:40px; width:350px; box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+h2 {text-align:center; color:#0056d2; margin-bottom:20px;}
+
+/* ===== TABS ===== */
+.tabs {display:flex; justify-content:space-around; margin-bottom:20px; cursor:pointer;}
+.tab {padding:10px 15px; border-radius:25px; background:#e9efff; transition:0.3s;}
+.tab.active {background:#0056d2; color:#fff; font-weight:600;}
+
+/* ===== FORM ===== */
+form {display:flex; flex-direction:column;}
+input {padding:12px 15px; margin-bottom:15px; border:1px solid #ccc; border-radius:25px; outline:none; transition:0.3s;}
+input:focus {border-color:#0056d2;}
+button {padding:12px; border-radius:25px; background:#0056d2; color:#fff; font-weight:600; transition:0.3s; cursor:pointer;}
+button:hover {background:#003c91;}
+p.switch {text-align:center; margin-top:10px; font-size:0.9rem; color:#555;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:400px){.login-container{width:90%; padding:30px;}}
+</style>
+</head>
+<body>
+
+<div class="login-container">
+  <h2>CourseHub Login</h2>
+  
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" data-tab="student">Student</div>
+    <div class="tab" data-tab="instructor">Instructor</div>
+    <div class="tab" data-tab="admin">Admin</div>
+  </div>
+  
+  <!-- STUDENT FORM -->
+  <form id="student" class="login-form">
+    <input type="email" placeholder="Student Email" required>
+    <input type="password" placeholder="Password" required>
+    <button type="submit">Login as Student</button>
+    <p class="switch">Don't have an account? <a href="#">Sign Up</a></p>
+  </form>
+
+  <!-- INSTRUCTOR FORM -->
+  <form id="instructor" class="login-form" style="display:none;">
+    <input type="email" placeholder="Instructor Email" required>
+    <input type="password" placeholder="Password" required>
+    <button type="submit">Login as Instructor</button>
+    <p class="switch">Don't have an account? <a href="#">Sign Up</a></p>
+  </form>
+
+  <!-- ADMIN FORM -->
+  <form id="admin" class="login-form" style="display:none;">
+    <input type="text" placeholder="Admin Username" required>
+    <input type="password" placeholder="Password" required>
+    <button type="submit">Login as Admin</button>
+  </form>
+</div>
+
+<script>
+// ===== Tab functionality =====
+const tabs = document.querySelectorAll('.tab');
+const forms = document.querySelectorAll('.login-form');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    forms.forEach(f => f.style.display='none');
+    document.getElementById(tab.dataset.tab).style.display='flex';
+  });
+});
+
+// ===== Redirect logic =====
+document.getElementById('student').addEventListener('submit', e => {
+  e.preventDefault();
+  window.location.href = "index.html"; // student dashboard
+});
+
+document.getElementById('instructor').addEventListener('submit', e => {
+  e.preventDefault();
+  window.location.href = "instructor_dashboard.html"; // instructor dashboard
+});
+
+document.getElementById('admin').addEventListener('submit', e => {
+  e.preventDefault();
+  window.location.href = "admin_dashboard.html"; // admin dashboard
+});
+</script>
+
+</body>
+</html>

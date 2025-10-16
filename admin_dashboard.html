@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | CourseHub</title>
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f8faff;
+}
+header {
+  background: #222;
+  color: #fff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header h1 {font-size: 1.5rem;}
+nav a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+nav a:hover {text-decoration: underline;}
+.container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 90vh;
+}
+.sidebar {
+  background: #333;
+  color: #fff;
+  padding: 20px;
+}
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #555;
+  padding-bottom: 10px;
+}
+.sidebar ul {list-style: none; padding: 0;}
+.sidebar li {
+  padding: 10px 0;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.sidebar li:hover {color: #00bfff;}
+.content {
+  padding: 30px;
+}
+section {
+  display: none;
+}
+section.active {
+  display: block;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+th {
+  background: #222;
+  color: #fff;
+}
+button {
+  background: #0056d2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {background: #003c91;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin Dashboard</h1>
+  <nav>
+    <a href="index.html">Logout</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="sidebar">
+    <h2>Admin Menu</h2>
+    <ul>
+      <li data-target="users">Manage Users</li>
+      <li data-target="courses">Manage Courses</li>
+      <li data-target="reports">System Reports</li>
+      <li data-target="offers">Offers & Discounts</li>
+      <li data-target="settings">Settings</li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <section id="users" class="active">
+      <h2>Manage Users</h2>
+      <table>
+        <tr><th>ID</th><th>Name</th><th>Role</th><th>Action</th></tr>
+        <tr><td>1</td><td>Alice</td><td>Student</td><td><button>Remove</button></td></tr>
+        <tr><td>2</td><td>Dr. Smith</td><td>Instructor</td><td><button>Remove</button></td></tr>
+      </table>
+    </section>
+
+    <section id="courses">
+      <h2>Manage Courses</h2>
+      <button>Add New Course</button>
+      <p>View, edit, or delete available courses.</p>
+    </section>
+
+    <section id="reports">
+      <h2>System Reports</h2>
+      <p>Track student enrollment trends, revenue, and course popularity.</p>
+      <button>Generate Report</button>
+    </section>
+
+    <section id="offers">
+      <h2>Offers & Discounts</h2>
+      <form>
+        <input type="text" placeholder="Offer Code">
+        <input type="number" placeholder="Discount %">
+        <button>Create Offer</button>
+      </form>
+    </section>
+
+    <section id="settings">
+      <h2>Admin Settings</h2>
+      <p>System configuration and access control.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+const menuItems = document.querySelectorAll('.sidebar li');
+const sections = document.querySelectorAll('section');
+menuItems.forEach(item => {
+  item.addEventListener('click', () => {
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById(item.dataset.target).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

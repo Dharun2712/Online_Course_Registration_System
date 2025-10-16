@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | CourseHub</title>
+<style>
+/* ====== GLOBAL STYLE ====== */
+* {margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
+body {background: #fff; color: #333; line-height: 1.6;}
+a {text-decoration: none; color: inherit;}
+img {max-width: 100%; border-radius: 10px;}
+h1, h2, h3 {color: #0056d2;}
+
+/* ====== HEADER ====== */
+header {
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo {font-size: 1.6rem; font-weight: 700; color: #0056d2;}
+.nav-links {display: flex; gap: 25px;}
+.nav-links a {font-weight: 500; color: #333; transition: 0.3s;}
+.nav-links a:hover {color: #0056d2;}
+.login-btn {
+  background: #0056d2;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 25px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.login-btn:hover {background: #003c91;}
+
+/* ====== HERO SECTION ====== */
+.hero {
+  background: linear-gradient(135deg, #0056d2, #007bff);
+  color: #fff;
+  text-align: center;
+  padding: 100px 20px;
+}
+.hero h1 {font-size: 2.8rem; margin-bottom: 10px;}
+.hero p {font-size: 1.1rem; width: 70%; margin: 0 auto;}
+
+/* ====== ABOUT CONTENT ====== */
+.about-section {
+  padding: 60px 10%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+}
+.about-text {flex: 1;}
+.about-text h2 {font-size: 2rem; margin-bottom: 15px;}
+.about-text p {margin-bottom: 20px;}
+.about-img {flex: 1;}
+.about-img img {width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+
+/* ====== MISSION SECTION ====== */
+.mission {
+  background: #f8f9ff;
+  padding: 60px 10%;
+  text-align: center;
+}
+.mission h2 {font-size: 2rem; margin-bottom: 20px;}
+.mission p {max-width: 800px; margin: 0 auto; color: #555;}
+.mission-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+}
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+.card:hover {transform: translateY(-5px);}
+.card i {font-size: 2rem; color: #0056d2; margin-bottom: 10px;}
+
+/* ====== TEAM SECTION ====== */
+.team {
+  padding: 60px 10%;
+  text-align: center;
+}
+.team h2 {font-size: 2rem; margin-bottom: 40px;}
+.team-members {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+.member {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.member img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+.member h3 {font-size: 1.1rem; color: #0056d2;}
+.member p {font-size: 0.9rem; color: #555;}
+
+/* ====== FOOTER ====== */
+footer {
+  background: #003c91;
+  color: #fff;
+  text-align: center;
+  padding: 40px 10%;
+}
+footer a {color: #fff; margin: 0 8px;}
+footer a:hover {text-decoration: underline;}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .about-section {flex-direction: column;}
+  .hero p {width: 100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo">CourseHub</div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="course_details.html">Courses</a>
+    <a href="about.html" class="active">About</a>
+    <a href="login.html" class="login-btn">Join</a>
+  </nav>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <h1>About CourseHub</h1>
+  <p>Your trusted online learning platform — bridging the gap between students, instructors, and technology worldwide.</p>
+</section>
+
+<!-- ===== ABOUT SECTION ===== -->
+<section class="about-section">
+  <div class="about-text">
+    <h2>Who We Are</h2>
+    <p>CourseHub is an innovative e-learning platform designed to empower learners, educators, and professionals across the globe. Our mission is to make high-quality education accessible to everyone, anywhere, anytime.</p>
+    <p>We provide a seamless online environment for students to learn, instructors to teach, and administrators to manage courses effectively — all in one smart ecosystem.</p>
+  </div>
+  <div class="about-img">
+    <img src="https://source.unsplash.com/600x400/?education,online" alt="About CourseHub">
+  </div>
+</section>
+
+<!-- ===== MISSION SECTION ===== -->
+<section class="mission">
+  <h2>Our Mission & Values</h2>
+  <p>We believe education is the key to unlocking potential. CourseHub aims to build a world where learning is continuous, affordable, and adaptive to every learner’s goals.</p>
+
+  <div class="mission-cards">
+    <div class="card">
+      <i>🎯</i>
+      <h3>Quality Learning</h3>
+      <p>Offering expertly curated courses by industry professionals.</p>
+    </div>
+    <div class="card">
+      <i>🌍</i>
+      <h3>Global Access</h3>
+      <p>Learn from anywhere — on any device, at your own pace.</p>
+    </div>
+    <div class="card">
+      <i>🤝</i>
+      <h3>Empowering Educators</h3>
+      <p>Helping instructors reach global audiences and monetize expertise.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEAM SECTION ===== -->
+<section class="team">
+  <h2>Meet Our Team</h2>
+  <div class="team-members">
+    <div class="member">
+      <img src="https://source.unsplash.com/300x300/?person,portrait" alt="">
+      <h3>Dr. A. Smith</h3>
+      <p>Founder & CEO</p>
+    </div>
+    <div class="member">
+      <img src="https://source.unsplash.com/300x300/?woman,leader" alt="">
+      <h3>Priya Sharma</h3>
+      <p>Chief Instructor</p>
+    </div>
+    <div class="member">
+      <img src="https://source.unsplash.com/300x300/?man,developer" alt="">
+      <h3>Ravi Kumar</h3>
+      <p>Technical Lead</p>
+    </div>
+    <div class="member">
+      <img src="https://source.unsplash.com/300x300/?teacher,classroom" alt="">
+      <h3>Emily Johnson</h3>
+      <p>Community Manager</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>© 2025 CourseHub | Empowering Education for Everyone</p>
+  <p>
+    <a href="index.html">Home</a> | 
+    <a href="course_details.html">Courses</a> | 
+    <a href="about.html">About</a> | 
+    <a href="login.html">Join</a>
+  </p>
+</footer>
+
+</body>
+</html>
