@@ -1,258 +1,506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CourseHub | Learn Anytime, Anywhere</title>
-<style>
-/* ======== GLOBAL STYLE ======== */
-* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
-body {background:#fff; color:#333; overflow-x:hidden;}
-a {text-decoration:none; color:inherit;}
-img {max-width:100%; border-radius:10px;}
-button {cursor:pointer; border:none; outline:none;}
-
-/* ======== NAVBAR ======== */
-header {
-  background:#fff;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:15px 50px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
-  position:sticky; top:0; z-index:10;
-}
-.logo {font-size:1.5rem; font-weight:700; color:#0056d2;}
-.nav-links {display:flex; gap:30px; align-items:center;}
-.nav-links a {color:#333; font-weight:500; transition:0.3s;}
-.nav-links a:hover {color:#0056d2;}
-.login-btn {
-  background:#0056d2; color:#fff; padding:8px 16px; border-radius:25px;
-  transition:0.3s;
-}
-.login-btn:hover {background:#003c91;}
-
-/* ======== HERO SECTION ======== */
-.hero {
-  background:linear-gradient(135deg,#0056d2,#007bff);
-  color:#fff; text-align:center; padding:100px 20px;
-}
-.hero h1 {font-size:3rem; margin-bottom:10px;}
-.hero p {font-size:1.2rem; margin-bottom:25px;}
-.hero input {
-  padding:12px 20px; width:40%; border:none; border-radius:25px;
-  outline:none; font-size:1rem;
-}
-.hero button {
-  margin-left:10px; padding:12px 25px; border-radius:25px;
-  background:#fff; color:#0056d2; font-weight:600;
-  transition:0.3s;
-}
-.hero button:hover {background:#e6e6e6;}
-
-/* ======== DROPDOWN ======== */
-.dropdown {position:relative; cursor:pointer;}
-.dropdown-menu {
-  display:none;
-  position:absolute;
-  top:35px;
-  left:0;
-  background:#fff;
-  box-shadow:0 4px 8px rgba(0,0,0,0.1);
-  border-radius:5px;
-  list-style:none;
-  min-width:150px;
-  z-index:100;
-}
-.dropdown-menu li {padding:10px 15px;}
-.dropdown-menu li a {color:#333;}
-.dropdown-menu li:hover {background:#e9efff;}
-
-/* ======== CATEGORIES ======== */
-.categories {padding:50px 5%; text-align:center;}
-.categories h2 {font-size:2rem; color:#0056d2; margin-bottom:30px;}
-.cat-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:20px;
-}
-.cat-item {
-  background:#f8f9ff; border-radius:10px; padding:20px; transition:0.3s;
-}
-.cat-item:hover {background:#e9efff; transform:translateY(-5px);}
-.cat-item i {font-size:2rem; color:#0056d2; margin-bottom:10px;}
-
-/* ======== FEATURED COURSES ======== */
-.courses {padding:50px 5%;}
-.courses h2 {text-align:center; font-size:2rem; color:#0056d2; margin-bottom:30px;}
-.course-grid {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:25px;
-}
-.course-card {
-  background:#fff; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1);
-  padding:15px; transition:0.3s;
-}
-.course-card:hover {transform:translateY(-5px);}
-.course-card img {height:150px; object-fit:cover;}
-.course-info h3 {margin:10px 0 5px;}
-.course-info p {font-size:0.9rem; color:#555;}
-.enroll-btn {
-  display:inline-block; margin-top:10px; padding:8px 16px;
-  background:#0056d2; color:#fff; border-radius:25px;
-  transition:0.3s;
-}
-.enroll-btn:hover {background:#003c91;}
-
-/* ======== TESTIMONIALS ======== */
-.testimonials {
-  background:#f8f9ff; padding:60px 5%; text-align:center;
-}
-.testimonials h2 {font-size:2rem; color:#0056d2; margin-bottom:40px;}
-.testimonial {
-  display:none; max-width:700px; margin:auto;
-  font-style:italic; color:#333;
-}
-.active {display:block;}
-.testimonial span {display:block; margin-top:15px; font-weight:600; color:#0056d2;}
-
-/* ======== FOOTER ======== */
-footer {
-  background:#003c91; color:#fff; padding:40px 5%; text-align:center;
-}
-footer a {color:#fff; margin:0 10px;}
-footer a:hover {text-decoration:underline;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnHub - Learn Without Limits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', -apple-system, sans-serif; background: #fff; color: #1f1f1f; }
+        
+        .navbar { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 0 40px; position: sticky; top: 0; z-index: 1000; }
+        .navbar-container { max-width: 1440px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .logo { font-size: 28px; font-weight: 700; color: #0056d2; display: flex; align-items: center; gap: 8px; }
+        .nav-menu { display: flex; gap: 32px; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: #1f1f1f; font-weight: 500; transition: color 0.3s; }
+        .nav-menu a:hover { color: #0056d2; }
+        .btn { padding: 12px 24px; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-outline { background: transparent; border: 2px solid #0056d2; color: #0056d2; }
+        .btn-outline:hover { background: #0056d2; color: #fff; }
+        .btn-primary { background: #0056d2; color: #fff; }
+        .btn-primary:hover { background: #004bb5; }
+        
+        .hero { background: linear-gradient(135deg, #0056d2, #004bb5); padding: 80px 40px; color: #fff; }
+        .hero-container { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+        .hero h1 { font-size: 56px; font-weight: 700; margin-bottom: 24px; }
+        .hero p { font-size: 20px; margin-bottom: 32px; opacity: 0.95; }
+        .hero-search { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .hero-search input { flex: 1; padding: 18px 24px; border: none; font-size: 16px; color: #1f1f1f; }
+        .hero-search input:focus { outline: none; }
+        .hero-search button { padding: 0 32px; background: #0056d2; color: #fff; border: none; font-weight: 600; cursor: pointer; }
+        .hero-stats { display: flex; gap: 40px; margin-top: 40px; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 32px; font-weight: 700; }
+        .stat-label { font-size: 14px; opacity: 0.9; margin-top: 4px; }
+        .hero-image img { width: 100%; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        
+        .categories { padding: 80px 40px; background: #f7f9fa; }
+        .section-title { text-align: center; font-size: 40px; font-weight: 700; margin-bottom: 16px; }
+        .section-subtitle { text-align: center; font-size: 18px; color: #666; margin-bottom: 48px; }
+        .category-grid { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+        .category-card { background: #fff; padding: 32px 24px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s; border: 1px solid #e0e0e0; }
+        .category-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); border-color: #0056d2; }
+        .category-icon { font-size: 48px; color: #0056d2; margin-bottom: 16px; }
+        .category-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .category-count { font-size: 14px; color: #666; }
+        
+        .courses { padding: 80px 40px; }
+        .course-grid { max-width: 1440px; margin: 48px auto 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
+        .course-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer; border: 1px solid #e0e0e0; }
+        .course-card:hover { transform: translateY(-8px); box-shadow: 0 16px 32px rgba(0,0,0,0.15); }
+        .course-image { width: 100%; height: 180px; object-fit: cover; background: linear-gradient(135deg, #667eea, #764ba2); }
+        .course-content { padding: 20px; }
+        .course-provider { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        .course-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
+        .course-meta { display: flex; gap: 16px; margin-bottom: 16px; font-size: 14px; color: #666; }
+        .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+        .course-price { font-size: 20px; font-weight: 700; color: #0056d2; }
+        .course-rating { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; }
+        .stars { color: #ffa927; }
+        
+        footer { background: #1f1f1f; color: #fff; padding: 60px 40px 30px; }
+        .footer-container { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 48px; margin-bottom: 40px; }
+        .footer-brand h3 { font-size: 28px; font-weight: 700; color: #0056d2; margin-bottom: 16px; }
+        .footer-brand p { color: #b0b0b0; line-height: 1.6; margin-bottom: 20px; }
+        .footer-column h4 { font-size: 16px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 12px; }
+        .footer-column ul li a { color: #b0b0b0; text-decoration: none; transition: color 0.3s; }
+        .footer-column ul li a:hover { color: #0056d2; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #333; color: #b0b0b0; }
+        
+        /* Login/Register Modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.active { display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; border-radius: 8px; width: 90%; max-width: 480px; padding: 40px; position: relative; }
+        .modal-close { position: absolute; right: 20px; top: 20px; font-size: 28px; cursor: pointer; color: #666; }
+        .modal-close:hover { color: #000; }
+        .modal-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; text-align: center; }
+        .tabs { display: flex; gap: 16px; margin-bottom: 32px; border-bottom: 2px solid #e0e0e0; }
+        .tab { padding: 12px 24px; cursor: pointer; font-weight: 600; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.3s; }
+        .tab.active { color: #0056d2; border-bottom-color: #0056d2; }
+        .tab:hover { color: #0056d2; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #1f1f1f; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #0056d2; }
+        .btn-full { width: 100%; padding: 14px; font-size: 16px; }
+        .error-message { background: #fee; color: #c33; padding: 12px; border-radius: 4px; margin-bottom: 16px; display: none; }
+        .success-message { background: #efe; color: #3c3; padding: 12px; border-radius: 4px; margin-bottom: 16px; display: none; }
+        
+        @media (max-width: 768px) {
+            .hero-container { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 32px; }
+            .nav-menu { display: none; }
+            .course-grid { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo"><i class="fas fa-graduation-cap"></i> LearnHub</div>
+            <ul class="nav-menu">
+                <li><a href="#courses">Explore</a></li>
+                <li><a href="/courses">All Courses</a></li>
+                <li><a href="#categories">Categories</a></li>
+            </ul>
+            <div style="display:flex; gap:16px;">
+                <button class="btn btn-outline" onclick="openModal('login')">Log In</button>
+                <button class="btn btn-primary" onclick="openModal('register')">Join Free</button>
+            </div>
+        </div>
+    </nav>
 
-<!-- ======== NAVBAR ======== -->
-<header>
-  <div class="logo">CourseHub</div>
-  <nav class="nav-links">
-    <a href="#">Home</a>
-    <a href="course.html">Courses</a>
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title">Welcome to LearnHub</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('register')">Register</div>
+            </div>
 
-    <!-- Categories Dropdown -->
-    <div class="dropdown">
-      <a href="javascript:void(0);" id="categoriesBtn">Categories ▼</a>
-      <ul class="dropdown-menu" id="categoriesMenu">
-        <li><a href="course.html">Technology</a></li>
-        <li><a href="course.html">AI & ML</a></li>
-        <li><a href="course.html">Business</a></li>
-        <li><a href="course.html">Design</a></li>
-        <li><a href="course.html">Marketing</a></li>
-        <li><a href="course.html">Languages</a></li>
-      </ul>
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm" style="display: block;">
+                <div class="form-group">
+                    <label>Select Role</label>
+                    <select id="loginRole" required>
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <p style="font-size: 13px; color: #666; margin-bottom: 16px;">
+                    <i class="fas fa-info-circle"></i> Default credentials - Admin: admin@gmail.com / admin@123 | Instructor: instructor@gmail.com / instructor@123
+                </p>
+                <button type="submit" class="btn btn-primary btn-full">Log In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="registerName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" placeholder="Create a password (min 6 characters)" required>
+                </div>
+                <p style="font-size: 14px; color: #666; margin-bottom: 16px;">
+                    <strong>Note:</strong> Public registration is for students only. Instructors and admins are created by administrators.
+                </p>
+                <button type="submit" class="btn btn-primary btn-full">Create Student Account</button>
+            </form>
+        </div>
     </div>
 
-    <a href="about.html">About</a>
-    <a href="login.html" class="login-btn">Join for Free</a>
-  </nav>
-</header>
+    <section class="hero">
+        <div class="hero-container">
+            <div>
+                <h1>Learn Without Limits</h1>
+                <p>Build skills with courses, certificates, and degrees online from world-class universities and companies</p>
+                <div class="hero-search">
+                    <input type="text" placeholder="What do you want to learn?" id="searchInput">
+                    <button onclick="window.location.href='/courses'"><i class="fas fa-search"></i> Search</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat"><div class="stat-number">10M+</div><div class="stat-label">Learners</div></div>
+                    <div class="stat"><div class="stat-number">5,400+</div><div class="stat-label">Courses</div></div>
+                    <div class="stat"><div class="stat-number">180+</div><div class="stat-label">Partners</div></div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="Students Learning">
+            </div>
+        </div>
+    </section>
 
-<!-- ======== HERO SECTION ======== -->
-<section class="hero">
-  <h1>Learn Anytime, Anywhere</h1>
-  <p>Empower your future with CourseHub’s online learning platform</p>
-  <input type="text" placeholder="What do you want to learn?">
-  <button>Search</button>
-</section>
+    <section class="categories" id="categories">
+        <h2 class="section-title">Explore Popular Categories</h2>
+        <p class="section-subtitle">Discover courses in your area of interest</p>
+        <div class="category-grid">
+            <div class="category-card" onclick="window.location.href='/courses?category=Business'">
+                <div class="category-icon"><i class="fas fa-briefcase"></i></div>
+                <div class="category-name">Business</div>
+                <div class="category-count">1,250 courses</div>
+            </div>
+            <div class="category-card" onclick="window.location.href='/courses?category=Technology'">
+                <div class="category-icon"><i class="fas fa-laptop-code"></i></div>
+                <div class="category-name">Technology</div>
+                <div class="category-count">2,400 courses</div>
+            </div>
+            <div class="category-card" onclick="window.location.href='/courses?category=Data Science'">
+                <div class="category-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="category-name">Data Science</div>
+                <div class="category-count">950 courses</div>
+            </div>
+            <div class="category-card" onclick="window.location.href='/courses?category=Design'">
+                <div class="category-icon"><i class="fas fa-palette"></i></div>
+                <div class="category-name">Design</div>
+                <div class="category-count">680 courses</div>
+            </div>
+            <div class="category-card" onclick="window.location.href='/courses?category=Marketing'">
+                <div class="category-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="category-name">Marketing</div>
+                <div class="category-count">540 courses</div>
+            </div>
+            <div class="category-card" onclick="window.location.href='/courses?category=Health'">
+                <div class="category-icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="category-name">Health</div>
+                <div class="category-count">420 courses</div>
+            </div>
+        </div>
+    </section>
 
-<!-- ======== CATEGORIES ======== -->
-<section class="categories">
-  <h2>Explore Popular Categories</h2>
-  <div class="cat-grid">
-    <div class="cat-item"><i>💻</i><p>Technology</p></div>
-    <div class="cat-item"><i>🧠</i><p>AI & ML</p></div>
-    <div class="cat-item"><i>💼</i><p>Business</p></div>
-    <div class="cat-item"><i>🎨</i><p>Design</p></div>
-    <div class="cat-item"><i>📈</i><p>Marketing</p></div>
-    <div class="cat-item"><i>🌍</i><p>Languages</p></div>
-  </div>
-</section>
+    <section class="courses" id="courses">
+        <h2 class="section-title">Featured Courses</h2>
+        <p class="section-subtitle">Explore our most popular courses</p>
+        <div class="course-grid" id="courseGrid">
+            <p id="courseGridLoading" style="grid-column: 1/-1; text-align:center; padding:40px; color:#666;">Loading courses...</p>
+        </div>
+    </section>
 
-<!-- ======== FEATURED COURSES ======== -->
-<section class="courses">
-  <h2>Featured Courses</h2>
-  <div class="course-grid">
-    <div class="course-card">
-      <img src="https://source.unsplash.com/300x200/?ai,learning" alt="">
-      <div class="course-info">
-        <h3>Introduction to AI</h3>
-        <p>by Dr. Smith • Free Course</p>
-        <a href="#" class="enroll-btn">Enroll Now</a>
-      </div>
-    </div>
-    <div class="course-card">
-      <img src="https://source.unsplash.com/300x200/?business,team" alt="">
-      <div class="course-info">
-        <h3>Business Analytics</h3>
-        <p>by John Doe • ₹499</p>
-        <a href="#" class="enroll-btn">Enroll Now</a>
-      </div>
-    </div>
-    <div class="course-card">
-      <img src="https://source.unsplash.com/300x200/?web,development" alt="">
-      <div class="course-info">
-        <h3>Full-Stack Web Development</h3>
-        <p>by Jane Parker • ₹699</p>
-        <a href="#" class="enroll-btn">Enroll Now</a>
-      </div>
-    </div>
-  </div>
-</section>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3><i class="fas fa-graduation-cap"></i> LearnHub</h3>
+                <p>LearnHub is a global online learning platform that offers anyone, anywhere access to online courses and degrees from world-class universities and companies.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Learn</h4>
+                <ul>
+                    <li><a href="/courses">All Courses</a></li>
+                    <li><a href="#">Degrees</a></li>
+                    <li><a href="#">Certificates</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 LearnHub Inc. All rights reserved.</p>
+        </div>
+    </footer>
 
-<!-- ======== TESTIMONIALS ======== -->
-<section class="testimonials">
-  <h2>What Our Learners Say</h2>
-  <div class="testimonial active">
-    <p>"CourseHub changed my career path completely. The instructors are world-class!"</p>
-    <span>– Aisha R.</span>
-  </div>
-  <div class="testimonial">
-    <p>"The badges and rewards system keeps me motivated to learn every week!"</p>
-    <span>– Ramesh K.</span>
-  </div>
-  <div class="testimonial">
-    <p>"AI course recommendations are spot-on. It’s like the platform knows what I love."</p>
-    <span>– Priya S.</span>
-  </div>
-</section>
+    <script>
+        // Load featured courses into the homepage grid
+        (async function loadFeaturedCourses(){
+            try{
+                const res = await fetch('/api/student/courses?page=1&per_page=6');
+                const data = await res.json();
+                const grid = document.getElementById('courseGrid');
+                if(data.success && data.courses && data.courses.length){
+                    document.getElementById('courseGridLoading')?.remove();
+                    grid.innerHTML = data.courses.map(c=>`
+                        <div class="course-card" onclick="window.location.href='/course/${c._id}'">
+                            <div class="course-image" style="background-image: url('${c.thumbnail || ('https://picsum.photos/seed/' + encodeURIComponent(c._id) + '/800/450')}'); background-size:cover;"></div>
+                            <div class="course-content">
+                                <div class="course-provider">${c.instructor_name || 'LearnHub'}</div>
+                                <div class="course-title">${c.title}</div>
+                                <div class="course-description">${(c.description || '').slice(0,120)}</div>
+                                <div class="course-footer">
+                                    <div class="course-price ${c.price==0? 'free':''}">${c.price>0 ? 'INR ' + c.price : 'FREE'}</div>
+                                    <div class="course-rating"><span class="stars">★★★★★</span> ${c.rating || '4.8'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;padding:40px">No courses available yet.</p>';
+                }
+            }catch(err){
+                console.error('Failed to load featured courses', err);
+                const grid = document.getElementById('courseGrid');
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;padding:40px">Error loading courses.</p>';
+            }
+        })();
+        // Modal Functions
+        function openModal(tab) {
+            document.getElementById('authModal').classList.add('active');
+            switchTab(tab);
+        }
 
-<!-- ======== FOOTER ======== -->
-<footer>
-  <p>© 2025 CourseHub | Learn Anytime, Anywhere</p>
-  <p>
-    <a href="#">About</a> | 
-    <a href="#">Contact</a> | 
-    <a href="#">Privacy</a>
-  </p>
-  <p>Follow us: 🌐 💼 💙</p>
-</footer>
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('active');
+            clearMessages();
+        }
 
-<!-- ======== JS ======== -->
-<script>
-// Testimonials slider
-let index = 0;
-const testimonials = document.querySelectorAll(".testimonial");
-setInterval(() => {
-  testimonials[index].classList.remove("active");
-  index = (index + 1) % testimonials.length;
-  testimonials[index].classList.add("active");
-}, 4000);
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+            }
+            clearMessages();
+        }
 
-// Categories dropdown toggle
-const categoriesBtn = document.getElementById("categoriesBtn");
-const categoriesMenu = document.getElementById("categoriesMenu");
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
 
-categoriesBtn.addEventListener("click", () => {
-  categoriesMenu.style.display = categoriesMenu.style.display === "block" ? "none" : "block";
-});
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
 
-// Close dropdown if clicked outside
-document.addEventListener("click", (e) => {
-  if (!categoriesBtn.contains(e.target) && !categoriesMenu.contains(e.target)) {
-    categoriesMenu.style.display = "none";
-  }
-});
-</script>
+        function clearMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
 
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const role = document.getElementById('loginRole').value;
+
+            console.log('Login attempt:', { email, role });
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                console.log('Login response:', data);
+
+                if (data.success) {
+                    // Verify the role matches
+                    if (String(data.user.role).toLowerCase() !== String(role).toLowerCase()) {
+                        showError(`This account is registered as ${data.user.role}, not ${role}. Please select the correct role.`);
+                        return;
+                    }
+
+                    // Store token and user info
+                    // store under both old and new keys for compatibility
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('auth_token', data.token);
+                    const serializedUser = JSON.stringify(data.user);
+                    localStorage.setItem('user', serializedUser);
+                    localStorage.setItem('user_data', serializedUser);
+                    
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    // Redirect based on role
+                    setTimeout(() => {
+                        const roleLower = String(data.user.role).toLowerCase();
+                        if (roleLower === 'student') {
+                            window.location.href = '/student/dashboard';
+                        } else if (roleLower === 'instructor') {
+                            window.location.href = '/instructor/dashboard';
+                        } else if (roleLower === 'admin') {
+                            window.location.href = '/admin/dashboard';
+                        }
+                    }, 1000);
+                } else {
+                    showError(data.error || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('An error occurred. Please try again.');
+            }
+        });
+
+        // Register Form Handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessages();
+
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = 'student';  // Always register as student
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token and user info
+                    localStorage.setItem('token', data.token);
+                    
+                    showSuccess('Account created successfully! Redirecting to your dashboard...');
+                    
+                    // Always redirect to student dashboard
+                    setTimeout(() => {
+                        window.location.href = '/student/dashboard';
+                    }, 1000);
+                } else {
+                    showError(data.error || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('An error occurred. Please try again.');
+            }
+        });
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Load Courses
+        async function loadCourses() {
+            try {
+                const response = await fetch('/api/student/courses?page=1&per_page=6');
+                const data = await response.json();
+                const grid = document.getElementById('courseGrid');
+                
+                if (data.success && data.courses && data.courses.length > 0) {
+                    grid.innerHTML = data.courses.map(course => `
+                        <div class="course-card" onclick="window.location.href='/course/${course._id}'">
+                            <img class="course-image" src="${course.thumbnail || ('https://picsum.photos/seed/' + encodeURIComponent(course._id) + '/400/240')}" alt="${course.title}" onerror="this.src='https://via.placeholder.com/400x240/eef2ff/024ea2?text=${encodeURIComponent(course.title)}'">
+                            <div class="course-content">
+                                <div class="course-provider">${course.instructor_name || 'LearnHub'}</div>
+                                <h3 class="course-title">${course.title}</h3>
+                                <div class="course-meta">
+                                    <span><i class="far fa-clock"></i> ${course.duration || 'Self-paced'}</span>
+                                    <span><i class="fas fa-signal"></i> ${course.level || 'Beginner'}</span>
+                                </div>
+                                <div class="course-footer">
+                                    <div class="course-price">${course.price > 0 ? 'INR ' + course.price : 'FREE'}</div>
+                                    <div class="course-rating">
+                                        <span class="stars">★★★★★</span>
+                                        <span>${course.rating || '4.8'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#666;">No courses available yet. Check back soon!</p>';
+                }
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#f44;">Error loading courses. Please refresh the page.</p>';
+            }
+        }
+        
+        loadCourses();
+    </script>
 </body>
 </html>

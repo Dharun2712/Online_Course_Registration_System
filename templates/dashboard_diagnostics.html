@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Diagnostics</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Instructor Dashboard Diagnostics</h1>
+    
+    <div class="section">
+        <h2>Step 1: Check Authentication</h2>
+        <div id="authStatus"></div>
+        <button onclick="checkAuth()">Recheck Auth</button>
+        <button onclick="clearAndLogin()">Clear & Login</button>
+    </div>
+    
+    <div class="section">
+        <h2>Step 2: Test API</h2>
+        <div id="apiStatus"></div>
+        <button onclick="testAPI()">Test API</button>
+    </div>
+    
+    <div class="section">
+        <h2>Step 3: View Courses</h2>
+        <div id="coursesDisplay"></div>
+    </div>
+
+    <script>
+        function checkAuth() {
+            const authDiv = document.getElementById('authStatus');
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            let html = '<h3>Authentication Status:</h3>';
+            
+            if (!token) {
+                html += '<p class="error">❌ No token found!</p>';
+                html += '<p>You are not logged in.</p>';
+            } else {
+                html += '<p class="success">✅ Token exists</p>';
+                html += `<pre>Token: ${token.substring(0, 50)}...</pre>`;
+            }
+            
+            if (!user) {
+                html += '<p class="error">❌ No user data found!</p>';
+            } else {
+                try {
+                    const userData = JSON.parse(user);
+                    html += '<p class="success">✅ User data exists</p>';
+                    html += `<pre>${JSON.stringify(userData, null, 2)}</pre>`;
+                    
+                    if (userData.role === 'instructor') {
+                        html += '<p class="success">✅ User is an instructor</p>';
+                    } else {
+                        html += `<p class="error">❌ User is not instructor (role: ${userData.role})</p>`;
+                    }
+                } catch (e) {
+                    html += `<p class="error">❌ Error parsing user data: ${e.message}</p>`;
+                }
+            }
+            
+            authDiv.innerHTML = html;
+        }
+        
+        async function testAPI() {
+            const apiDiv = document.getElementById('apiStatus');
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                apiDiv.innerHTML = '<p class="error">❌ Cannot test API: No token found. Please login first.</p>';
+                return;
+            }
+            
+            apiDiv.innerHTML = '<p class="info">⏳ Testing API...</p>';
+            
+            try {
+                const response = await fetch('/api/instructor/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                let html = `<h3>API Response:</h3>`;
+                html += `<p>Status: ${response.status} ${response.statusText}</p>`;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    html += '<p class="success">✅ API call successful</p>';
+                    html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    
+                    // Display courses
+                    if (data.courses && data.courses.length > 0) {
+                        displayCourses(data.courses);
+                    }
+                } else {
+                    html += `<p class="error">❌ API call failed</p>`;
+                    const errorText = await response.text();
+                    html += `<pre>${errorText}</pre>`;
+                }
+                
+                apiDiv.innerHTML = html;
+            } catch (error) {
+                apiDiv.innerHTML = `<p class="error">❌ Error: ${error.message}</p><pre>${error.stack}</pre>`;
+            }
+        }
+        
+        function displayCourses(courses) {
+            const coursesDiv = document.getElementById('coursesDisplay');
+            let html = `<h3>Found ${courses.length} courses:</h3>`;
+            
+            courses.forEach((course, index) => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                        <h4>${index + 1}. ${course.title}</h4>
+                        <p><strong>ID:</strong> ${course._id}</p>
+                        <p><strong>Enrolled Students:</strong> ${course.enrolled_count || 0}</p>
+                        <p><strong>Price:</strong> $${course.price || 0}</p>
+                        <p><strong>Published:</strong> ${course.is_published ? 'Yes' : 'No'}</p>
+                        <p><strong>Level:</strong> ${course.level || 'N/A'}</p>
+                        <p><strong>Rating:</strong> ${course.rating || 0}</p>
+                    </div>
+                `;
+            });
+            
+            coursesDiv.innerHTML = html;
+        }
+        
+        async function clearAndLogin() {
+            localStorage.clear();
+            alert('localStorage cleared! Redirecting to instructor login...');
+            window.location.href = '/instructor/login';
+        }
+        
+        // Run checks on load
+        window.onload = function() {
+            checkAuth();
+            const token = localStorage.getItem('token');
+            if (token) {
+                testAPI();
+            }
+        };
+    </script>
+</body>
+</html>

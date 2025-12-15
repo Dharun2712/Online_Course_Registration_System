@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Learning - LearnHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f1117;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .navbar-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 68px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 30px;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* ========== MAIN LAYOUT ========== */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 0;
+            min-height: calc(100vh - 68px);
+            background: #0f1117;
+        }
+
+        .main-content {
+            background: #0f1117;
+            padding: 0;
+            position: relative;
+        }
+
+        /* ========== VIDEO CONTAINER ========== */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: linear-gradient(135deg, #1a1d2e 0%, #16192b 100%);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ========== PROGRESS BAR ========== */
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+            transition: width 0.5s ease;
+        }
+        
+        /* ========== ATTENDANCE BANNER ========== */
+        .attendance-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px 32px;
+            margin: 24px 24px 0 24px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            animation: fadeIn 0.6s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .attendance-banner.marked {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+        
+        .attendance-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .attendance-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .attendance-text h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .attendance-text p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .btn-mark-attendance {
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-mark-attendance:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-mark-attendance:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ========== LEARNING ACTIONS ========== */
+        .learning-actions {
+            display: flex;
+            gap: 12px;
+            padding: 24px 32px;
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-btn:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .action-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
+        }
+        
+        .action-btn i {
+            font-size: 18px;
+        }
+        
+        /* ========== NOTES & BOOKMARKS SECTIONS ========== */
+        .notes-section, .bookmarks-section {
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            padding: 32px;
+            margin: 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .notes-section.active, .bookmarks-section.active {
+            display: block;
+        }
+        
+        .notes-section h3, .bookmarks-section h3 {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .note-input-area {
+            margin-bottom: 24px;
+        }
+        
+        .note-input-area textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 16px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            transition: all 0.3s;
+        }
+        
+        .note-input-area textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .note-input-area textarea::placeholder {
+            color: rgba(229, 231, 235, 0.5);
+        }
+        
+        .note-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .note-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .note-time {
+            font-size: 13px;
+            color: rgba(229, 231, 235, 0.6);
+        }
+        
+        .note-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #e5e7eb;
+        }
+        
+        .note-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .note-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            color: #e5e7eb;
+            transition: all 0.3s;
+        }
+        
+        .note-actions button:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .bookmark-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .bookmark-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+        
+        .bookmark-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bookmark-info i {
+            color: #0056d2;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 16px 24px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0056d2, #00aaff);
+            transition: width 0.5s ease;
+        }
+
+        .course-info {
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            padding: 32px;
+            border-radius: 16px;
+            margin: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .course-info h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #e5e7eb;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .course-meta {
+            color: rgba(229, 231, 235, 0.7);
+            font-size: 15px;
+            margin-bottom: 28px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .course-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .course-meta i {
+            color: #667eea;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            margin-bottom: 24px;
+            gap: 8px;
+        }
+
+        .tab {
+            padding: 14px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            font-weight: 600;
+            color: rgba(229, 231, 235, 0.6);
+            transition: all 0.3s;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #667eea;
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content p {
+            color: #e5e7eb;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .material-item {
+            padding: 16px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .material-item:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+
+        .material-item i {
+            color: #667eea;
+            margin-right: 8px;
+        }
+
+        .live-session {
+            padding: 24px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            color: #e5e7eb;
+        }
+
+        .live-session:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .live-session.upcoming {
+            border-left: 5px solid #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .live-session.upcoming::before {
+            content: 'UPCOMING';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .live-session h4 {
+            margin-bottom: 12px;
+            color: #e5e7eb;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-session h4 i {
+            color: #667eea;
+        }
+
+        .live-session p {
+            color: rgba(229, 231, 235, 0.8);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .live-session p i {
+            color: #667eea;
+            margin-right: 8px;
+        }
+
+        .exam-card {
+            padding: 24px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            transition: all 0.3s;
+            color: #1f1f1f;
+        }
+
+        .exam-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .exam-card h4 {
+            margin-bottom: 12px;
+            color: #1f1f1f;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .exam-card p {
+            color: #4b5563;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .exam-card strong {
+            color: #1f1f1f;
+        }
+
+        .exam-status {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .exam-status.available {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+        }
+
+        .exam-status.completed {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .live-session h4 i {
+            color: #0056d2;
+            font-size: 20px;
+        }
+
+        .live-session .meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-session .meta i {
+            color: #0056d2;
+            width: 18px;
+        }
+
+        .live-session .session-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+        }
+
+        .live-session .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .live-session .detail-item i {
+            color: #0056d2;
+            width: 16px;
+        }
+
+        .live-session .session-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .live-session .btn-join {
+            flex: 1;
+            padding: 12px 24px;
+            background: #0056d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .live-session .btn-join:hover {
+            background: #004bb5;
+            transform: scale(1.02);
+        }
+
+        .live-session .btn-join i {
+            font-size: 16px;
+        }
+
+        .live-session.past {
+            opacity: 0.7;
+            background: #f9f9f9;
+        }
+
+        .live-session.past .btn-join {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .empty-live-sessions {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-live-sessions i {
+            font-size: 64px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-live-sessions h3 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            border-left: 1px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 68px);
+            overflow-y: auto;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        .sidebar-section {
+            padding: 24px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .sidebar-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .module-list {
+            list-style: none;
+        }
+
+        .module-item {
+            padding: 16px 14px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e5e7eb;
+        }
+
+        .module-item:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+
+        .module-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.5);
+        }
+        
+        .module-item.active i {
+            color: #fff !important;
+        }
+        
+        .module-item.active .fa-check-circle {
+            color: #10b981 !important;
+        }
+
+        .module-item i {
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        /* ========== CHATBOT ========== */
+        .chatbot-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 420px;
+            height: 680px;
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+            border-radius: 20px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chatbot-container.open {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 24px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .chatbot-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .chatbot-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chatbot-title h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .chatbot-title p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chatbot-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-bubble {
+            background: #ffffff;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #1f1f1f;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message.bot .message-bubble strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .message.bot .message-bubble code {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .chatbot-input {
+            padding: 20px;
+            border-top: 1px solid rgba(102, 126, 234, 0.3);
+            display: flex;
+            gap: 12px;
+            background: linear-gradient(180deg, #1a1d2e 0%, #16192b 100%);
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .chatbot-input input::placeholder {
+            color: rgba(229, 231, 235, 0.5);
+        }
+
+        .chatbot-input button {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .chatbot-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+            z-index: 1999;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.7);
+            animation: pulse 0.6s ease;
+        }
+
+        .chatbot-toggle.hidden {
+            display: none;
+        }
+
+        .chatbot-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            border: 2px solid #16192b;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-bubble {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .message.bot .message-bubble strong {
+            color: #0056d2;
+            font-weight: 600;
+        }
+        
+        .message.bot .message-bubble br {
+            line-height: 1.8;
+        }
+
+        .message.user .message-bubble {
+            background: #0056d2;
+            color: #fff;
+        }
+
+        .chatbot-input {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .chatbot-input button {
+            padding: 10px 20px;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #0056d2;
+            color: #fff;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1999;
+            transition: all 0.3s;
+        }
+
+        .chatbot-toggle:hover {
+            background: #004bb5;
+            transform: scale(1.1);
+        }
+
+        .chatbot-toggle.hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                max-height: none;
+                border-left: none;
+                border-top: 1px solid rgba(102, 126, 234, 0.2);
+            }
+            .chatbot-container {
+                width: 90%;
+                right: 5%;
+                height: 600px;
+            }
+            .chatbot-toggle {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+            .navbar-container {
+                height: 60px;
+            }
+            .attendance-banner {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .learning-actions {
+                padding: 20px;
+            }
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            .notes-section, .bookmarks-section {
+                padding: 24px 20px;
+                margin: 16px;
+            }
+            .chatbot-container {
+                width: 100%;
+                right: 0;
+                bottom: 0;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .chatbot-header {
+                border-radius: 0;
+            }
+        }
+
+        /* ========== UTILITY CLASSES ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i> LearnHub
+            </a>
+            <div class="nav-right">
+                <button class="btn btn-primary" onclick="window.location.href='/student/dashboard'">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="courseProgress" style="width: 0%"></div>
+            </div>
+            
+            <!-- Video Player -->
+            <div class="video-container">
+                <div id="videoPlayer"></div>
+            </div>
+            
+            <!-- Attendance Banner -->
+            <div class="attendance-banner" id="attendanceBanner">
+                <div class="attendance-info">
+                    <div class="attendance-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="attendance-text">
+                        <h4>Mark Your Attendance</h4>
+                        <p>Track your learning progress for today's session</p>
+                    </div>
+                </div>
+                <button class="btn-mark-attendance" id="btnMarkAttendance" onclick="markAttendance()">
+                    <i class="fas fa-check-circle"></i> Mark Present
+                </button>
+            </div>
+            
+            <!-- Learning Actions -->
+            <div class="learning-actions">
+                <button class="action-btn" onclick="toggleNotes()">
+                    <i class="fas fa-sticky-note"></i>
+                    <span>My Notes</span>
+                </button>
+                <button class="action-btn" onclick="toggleBookmarks()">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Bookmarks</span>
+                </button>
+                <button class="action-btn" onclick="downloadCertificate()">
+                    <i class="fas fa-certificate"></i>
+                    <span>Certificate</span>
+                </button>
+                <button class="action-btn" onclick="window.open('https://meet.google.com/', '_blank')">
+                    <i class="fas fa-video"></i>
+                    <span>Join Live</span>
+                </button>
+            </div>
+            
+            <!-- Notes Section -->
+            <div class="notes-section" id="notesSection">
+                <h3>
+                    <span><i class="fas fa-sticky-note"></i> My Course Notes</span>
+                    <button class="btn btn-primary" style="font-size:14px;" onclick="saveNote()">
+                        <i class="fas fa-save"></i> Save Note
+                    </button>
+                </h3>
+                <div class="note-input-area">
+                    <textarea id="noteInput" placeholder="Type your notes here... You can write down key points, questions, or anything you want to remember from this lesson."></textarea>
+                </div>
+                <div id="notesList">
+                    <!-- Notes will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Bookmarks Section -->
+            <div class="bookmarks-section" id="bookmarksSection">
+                <h3>
+                    <span><i class="fas fa-bookmark"></i> My Bookmarks</span>
+                    <button class="btn btn-primary" style="font-size:14px;" onclick="addBookmark()">
+                        <i class="fas fa-plus"></i> Add Bookmark
+                    </button>
+                </h3>
+                <div id="bookmarksList">
+                    <!-- Bookmarks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Course Info -->
+            <div class="course-info">
+                <h1 id="courseTitle">Loading...</h1>
+                <div class="course-meta">
+                    <span id="courseInstructor"><i class="fas fa-user"></i> Instructor</span> • 
+                    <span id="courseLevel"><i class="fas fa-signal"></i> All Levels</span> • 
+                    <span id="courseDuration"><i class="fas fa-clock"></i> 10 hours</span>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" onclick="switchCourseTab('overview')">Overview</div>
+                    <div class="tab" onclick="switchCourseTab('materials')">Materials</div>
+                    <div class="tab" onclick="switchCourseTab('live')">Live Sessions</div>
+                    <div class="tab" onclick="switchCourseTab('exams')">Exams</div>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tab-content active" id="tab-overview">
+                    <p id="courseDescription">Loading course description...</p>
+                </div>
+
+                <div class="tab-content" id="tab-materials">
+                    <div id="materialsList">
+                        <p style="color: rgba(229, 231, 235, 0.6);">Loading materials...</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-live">
+                    <div id="liveSessionsList">
+                        <p style="color: rgba(229, 231, 235, 0.6);">Loading live sessions...</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-exams">
+                    <div id="examsList">
+                        <p style="color: rgba(229, 231, 235, 0.6);">Loading exams...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>
+                    Course Content
+                    <span style="font-size:12px;color:rgba(229, 231, 235, 0.6);font-weight:normal" id="progressText">0% Complete</span>
+                </h3>
+                <ul class="module-list" id="moduleList">
+                    <li class="module-item active">
+                        <i class="fas fa-play-circle"></i> Introduction
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <button class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+        <span class="chatbot-badge hidden" id="chatbotBadge">1</span>
+    </button>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div class="chatbot-header-left">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-title">
+                    <h3>AI Course Assistant</h3>
+                    <p>Always here to help you learn</p>
+                </div>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-bubble">
+                    👋 Hi there! I'm your <strong>AI Course Assistant</strong>. I'm here to help you with:<br><br>
+                    • Course content questions<br>
+                    • Programming concepts<br>
+                    • Code explanations<br>
+                    • Study tips and resources<br><br>
+                    Feel free to ask me anything!
+                </div>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Type your question here..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button class="btn btn-primary" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Load YouTube IFrame Player API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        const token = localStorage.getItem('token');
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+
+        // Get course ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('course_id');
+
+        if (!courseId) {
+            alert('No course specified');
+            window.location.href = '/student/dashboard';
+        }
+
+        // YouTube Player variable
+        let player;
+        let currentVideoCompleted = false;
+        let videoStartTime = null;
+
+        // Course modules with YouTube playlist videos
+        const courseModules = [
+            {
+                id: 1,
+                title: 'Introduction to Python',
+                videoId: '_t2GVaQasRY',
+                duration: '15:20',
+                description: 'Get started with Python programming basics and setup your development environment.'
+            },
+            {
+                id: 2,
+                title: 'Python Variables and Data Types',
+                videoId: 'TqPzwenhMj0',
+                duration: '18:45',
+                description: 'Learn about different data types in Python including strings, integers, floats, and booleans.'
+            },
+            {
+                id: 3,
+                title: 'Operators in Python',
+                videoId: 'v5MR5JnKcZI',
+                duration: '22:30',
+                description: 'Understand arithmetic, comparison, logical, and assignment operators in Python.'
+            },
+            {
+                id: 4,
+                title: 'Strings in Python',
+                videoId: 'lrS4fRyP1ts',
+                duration: '25:15',
+                description: 'Master string manipulation, formatting, and common string methods in Python.'
+            },
+            {
+                id: 5,
+                title: 'Lists in Python',
+                videoId: 'Eaz5e6M8tL4',
+                duration: '20:40',
+                description: 'Explore Python lists, list methods, slicing, and list comprehensions.'
+            },
+            {
+                id: 6,
+                title: 'Tuples in Python',
+                videoId: 'Mf7eFtbVxFM',
+                duration: '16:25',
+                description: 'Learn about immutable tuples and when to use them in your Python programs.'
+            },
+            {
+                id: 7,
+                title: 'Sets in Python',
+                videoId: '8_kY48Hrx9Q',
+                duration: '19:10',
+                description: 'Understand sets, set operations, and their applications in Python programming.'
+            },
+            {
+                id: 8,
+                title: 'Dictionary in Python',
+                videoId: 'LfQdVan95Ic',
+                duration: '23:50',
+                description: 'Master Python dictionaries, key-value pairs, and dictionary methods.'
+            },
+            {
+                id: 9,
+                title: 'If Else Statements',
+                videoId: 'PqFKRqpHrjw',
+                duration: '21:15',
+                description: 'Learn conditional statements and control flow in Python programs.'
+            },
+            {
+                id: 10,
+                title: 'For Loop in Python',
+                videoId: '0ZvaDa8eT5s',
+                duration: '24:30',
+                description: 'Understand iteration with for loops, range function, and loop control statements.'
+            },
+            {
+                id: 11,
+                title: 'While Loop in Python',
+                videoId: '8kPmzI0K9Qc',
+                duration: '18:20',
+                description: 'Master while loops, infinite loops, and loop termination conditions.'
+            },
+            {
+                id: 12,
+                title: 'Break and Continue',
+                videoId: 'LrOAl8vUFHY',
+                duration: '15:45',
+                description: 'Learn how to control loop execution with break and continue statements.'
+            },
+            {
+                id: 13,
+                title: 'Functions in Python',
+                videoId: 'BVfCWuca9nw',
+                duration: '26:40',
+                description: 'Create reusable code with functions, parameters, and return values.'
+            },
+            {
+                id: 14,
+                title: 'Lambda Functions',
+                videoId: 'Ob9rY6PQMfI',
+                duration: '17:55',
+                description: 'Explore anonymous lambda functions and their use cases in Python.'
+            },
+            {
+                id: 15,
+                title: 'Map, Filter & Reduce',
+                videoId: '25ovCm9jKfA',
+                duration: '22:10',
+                description: 'Master functional programming concepts with map, filter, and reduce functions.'
+            }
+        ];
+
+        let currentModuleIndex = 0;
+        let completedVideos = new Set();
+
+        // YouTube Player API ready callback
+        function onYouTubeIframeAPIReady() {
+            // Initialize player after modules are loaded
+            console.log('YouTube IFrame API Ready');
+        }
+
+        // Initialize YouTube Player
+        function initYouTubePlayer(videoId) {
+            const playerElement = document.getElementById('videoPlayer');
+            
+            // Destroy existing player if any
+            if (player) {
+                player.destroy();
+            }
+            
+            // Create new player
+            player = new YT.Player('videoPlayer', {
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1,
+                    'rel': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // Player ready event
+        function onPlayerReady(event) {
+            console.log('Player ready');
+            videoStartTime = Date.now();
+            currentVideoCompleted = false;
+        }
+
+        // Player state change event
+        function onPlayerStateChange(event) {
+            // Video ended
+            if (event.data === YT.PlayerState.ENDED) {
+                handleVideoCompletion();
+            }
+            // Video playing
+            else if (event.data === YT.PlayerState.PLAYING) {
+                if (!videoStartTime) {
+                    videoStartTime = Date.now();
+                }
+            }
+        }
+
+        // Handle video completion
+        async function handleVideoCompletion() {
+            if (currentVideoCompleted) return; // Prevent duplicate calls
+            
+            currentVideoCompleted = true;
+            const module = courseModules[currentModuleIndex];
+            const watchTime = videoStartTime ? Math.floor((Date.now() - videoStartTime) / 1000) : 0;
+            
+            try {
+                const response = await fetch(`${API_BASE}/student/courses/${courseId}/videos/${module.videoId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        video_index: currentModuleIndex,
+                        video_title: module.title,
+                        watch_time: watchTime,
+                        total_videos: courseModules.length
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Add to completed set
+                    completedVideos.add(module.videoId);
+                    
+                    // Update UI
+                    updateProgressUI(data.progress, data.completed_videos, data.total_videos);
+                    
+                    // Show completion toast
+                    showToast(`✓ Video completed! Progress: ${data.progress}%`, 'success');
+                    
+                    // Update module checkmark
+                    renderModuleList();
+                } else {
+                    console.error('Failed to mark video complete:', data.error);
+                }
+            } catch (error) {
+                console.error('Error marking video complete:', error);
+            }
+        }
+
+        // Update progress UI
+        function updateProgressUI(progressPercent, completedCount, totalCount) {
+            document.getElementById('courseProgress').style.width = progressPercent + '%';
+            document.getElementById('progressText').textContent = progressPercent + '% Complete';
+            
+            // Save to localStorage
+            localStorage.setItem(`progress_${courseId}`, progressPercent);
+        }
+
+        // Load current module video
+        function loadModule(index) {
+            if (index < 0 || index >= courseModules.length) return;
+            
+            currentModuleIndex = index;
+            const module = courseModules[index];
+            
+            // Reset video completion flag
+            currentVideoCompleted = false;
+            videoStartTime = null;
+            
+            // Initialize or load new video
+            if (player && player.loadVideoById) {
+                player.loadVideoById(module.videoId);
+            } else {
+                // Create player if not exists
+                initYouTubePlayer(module.videoId);
+            }
+            
+            // Update module list active state
+            const moduleItems = document.querySelectorAll('.module-item');
+            moduleItems.forEach((item, idx) => {
+                if (idx === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Render module list
+        function renderModuleList() {
+            const moduleList = document.getElementById('moduleList');
+            moduleList.innerHTML = courseModules.map((module, index) => {
+                const isCompleted = completedVideos.has(module.videoId);
+                const isActive = index === currentModuleIndex;
+                
+                return `
+                <li class="module-item ${isActive ? 'active' : ''}" onclick="loadModule(${index})">
+                    <div style="display:flex;align-items:center;gap:8px;width:100%">
+                        <i class="fas fa-play-circle" style="color:${isActive ? '#fff' : '#0056d2'}"></i>
+                        <div style="flex:1">
+                            <div style="font-weight:600;font-size:14px">${module.title}</div>
+                            <div style="font-size:11px;color:${isActive ? 'rgba(255,255,255,0.8)' : '#999'};margin-top:2px">
+                                <i class="fas fa-clock"></i> ${module.duration}
+                            </div>
+                        </div>
+                        ${isCompleted ? '<i class="fas fa-check-circle" style="color:#00b894"></i>' : ''}
+                    </div>
+                </li>
+            `;
+            }).join('');
+        }
+
+        // Load course data
+        async function loadCourseData() {
+            try {
+                const res = await fetch(`${API_BASE}/student/courses/${courseId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success && data.course) {
+                    const course = data.course;
+                    document.getElementById('courseTitle').textContent = course.title;
+                    document.getElementById('courseInstructor').innerHTML = `<i class="fas fa-user"></i> ${course.instructor_name || 'Instructor'}`;
+                    document.getElementById('courseLevel').innerHTML = `<i class="fas fa-signal"></i> ${course.level || 'All Levels'}`;
+                    document.getElementById('courseDuration').innerHTML = `<i class="fas fa-clock"></i> ${courseModules.length} Modules`;
+                    
+                    // Enhanced overview content
+                    const overviewContent = `
+                        <div style="line-height:1.8">
+                            <h3 style="color:#1f1f1f;margin-bottom:16px">Course Overview</h3>
+                            <p style="margin-bottom:16px">${course.description || 'Welcome to this comprehensive Python programming course! This course is designed to take you from beginner to advanced level with hands-on examples and real-world projects.'}</p>
+                            
+                            <h4 style="color:#0056d2;margin:20px 0 12px 0">What You'll Learn</h4>
+                            <ul style="list-style:none;padding:0;margin-bottom:20px">
+                                <li style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+                                    <i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i>
+                                    Python fundamentals including variables, data types, and operators
+                                </li>
+                                <li style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+                                    <i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i>
+                                    Working with different data structures: Lists, Tuples, Sets, and Dictionaries
+                                </li>
+                                <li style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+                                    <i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i>
+                                    Control flow with if-else statements and loops (for and while)
+                                </li>
+                                <li style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+                                    <i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i>
+                                    Creating and using functions for reusable code
+                                </li>
+                                <li style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+                                    <i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i>
+                                    Advanced concepts like lambda functions, map, filter, and reduce
+                                </li>
+                            </ul>
+                            
+                            <h4 style="color:#0056d2;margin:20px 0 12px 0">Course Features</h4>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+                                <div style="padding:16px;background:#e8f1fc;border-radius:8px">
+                                    <div style="font-size:24px;margin-bottom:8px">📹</div>
+                                    <strong style="display:block;margin-bottom:4px">${courseModules.length} Video Lessons</strong>
+                                    <span style="font-size:13px;color:#666">Comprehensive tutorials</span>
+                                </div>
+                                <div style="padding:16px;background:#e8f8f5;border-radius:8px">
+                                    <div style="font-size:24px;margin-bottom:8px">⏱️</div>
+                                    <strong style="display:block;margin-bottom:4px">8+ Hours</strong>
+                                    <span style="font-size:13px;color:#666">On-demand video content</span>
+                                </div>
+                                <div style="padding:16px;background:#fff5e6;border-radius:8px">
+                                    <div style="font-size:24px;margin-bottom:8px">🎯</div>
+                                    <strong style="display:block;margin-bottom:4px">Hands-on Practice</strong>
+                                    <span style="font-size:13px;color:#666">Real-world examples</span>
+                                </div>
+                                <div style="padding:16px;background:#f3e8ff;border-radius:8px">
+                                    <div style="font-size:24px;margin-bottom:8px">🎓</div>
+                                    <strong style="display:block;margin-bottom:4px">Certificate</strong>
+                                    <span style="font-size:13px;color:#666">Upon completion</span>
+                                </div>
+                            </div>
+                            
+                            <h4 style="color:#0056d2;margin:20px 0 12px 0">Prerequisites</h4>
+                            <p style="margin-bottom:12px">
+                                <i class="fas fa-info-circle" style="color:#0056d2;margin-right:8px"></i>
+                                No prior programming experience required! This course starts from the very basics.
+                            </p>
+                            <p style="margin-bottom:12px">
+                                <i class="fas fa-laptop" style="color:#0056d2;margin-right:8px"></i>
+                                A computer with internet connection to follow along with the tutorials.
+                            </p>
+                            <p>
+                                <i class="fas fa-fire" style="color:#0056d2;margin-right:8px"></i>
+                                Enthusiasm to learn and practice coding!
+                            </p>
+                        </div>
+                    `;
+                    document.getElementById('courseDescription').innerHTML = overviewContent;
+                    
+                    // Load first video
+                    loadModule(0);
+                } else {
+                    // Fallback content
+                    loadDefaultOverview();
+                    loadModule(0);
+                }
+            } catch (error) {
+                console.error('Error loading course:', error);
+                loadDefaultOverview();
+                loadModule(0);
+            }
+        }
+        
+        function loadDefaultOverview() {
+            const overviewContent = `
+                <div style="line-height:1.8">
+                    <h3 style="color:#1f1f1f;margin-bottom:16px">Python Programming Complete Course</h3>
+                    <p style="margin-bottom:16px">Master Python programming from basics to advanced concepts with this comprehensive video tutorial series. Perfect for beginners and those looking to strengthen their Python skills!</p>
+                    
+                    <h4 style="color:#0056d2;margin:20px 0 12px 0">What You'll Learn</h4>
+                    <ul style="list-style:none;padding:0">
+                        <li style="padding:8px 0"><i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i> Python fundamentals and syntax</li>
+                        <li style="padding:8px 0"><i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i> Data structures and algorithms</li>
+                        <li style="padding:8px 0"><i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i> Control flow and functions</li>
+                        <li style="padding:8px 0"><i class="fas fa-check-circle" style="color:#00b894;margin-right:8px"></i> Advanced Python concepts</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('courseDescription').innerHTML = overviewContent;
+        }
+
+        // Extract YouTube video ID from URL
+        function extractYouTubeId(url) {
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
+            return match ? match[1] : null;
+        }
+
+        // Load materials
+        async function loadMaterials() {
+            try {
+                const res = await fetch(`${API_BASE}/student/courses/${courseId}/materials`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                const list = document.getElementById('materialsList');
+                if (data.success && data.materials && data.materials.length > 0) {
+                    list.innerHTML = data.materials.map(m => `
+                        <div class="material-item">
+                            <div>
+                                <i class="fas fa-file-alt"></i> <strong>${m.title || m.filename || 'Material'}</strong>
+                                <div style="font-size:12px;color:#666;margin-top:4px">${m.description || ''}</div>
+                            </div>
+                            <a href="${m.url || m.file_url || '#'}" target="_blank" class="btn btn-primary" style="text-decoration:none">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="color:#666">No materials uploaded yet.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading materials:', error);
+                document.getElementById('materialsList').innerHTML = '<p style="color:#999">Error loading materials.</p>';
+            }
+        }
+
+        // Load live sessions
+        async function loadLiveSessions() {
+            try {
+                const res = await fetch(`${API_BASE}/student/courses/${courseId}/liveclasses`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                const list = document.getElementById('liveSessionsList');
+                if (data.success && data.live_classes && data.live_classes.length > 0) {
+                    const now = new Date();
+                    list.innerHTML = data.live_classes.map(session => {
+                        const startsAt = new Date(session.starts_at);
+                        // Force all sessions to be available (ignore past/future dates)
+                        const isUpcoming = false;
+                        const isPast = false;
+                        
+                        // Format date and time
+                        const dateStr = startsAt.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        const timeStr = startsAt.toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        
+                        // Calculate time until/since
+                        const diffMs = startsAt - now;
+                        const diffMins = Math.floor(diffMs / 60000);
+                        const diffHours = Math.floor(diffMins / 60);
+                        const diffDays = Math.floor(diffHours / 24);
+                        
+                        let timeIndicator = '<span style="color:#00a854;font-weight:600;font-size:12px">🔴 LIVE NOW</span>';
+                        
+                        const sessionClass = 'live';
+                        
+                        return `
+                            <div class="live-session ${sessionClass}">
+                                <h4>
+                                    <i class="fas fa-video"></i>
+                                    ${session.title || 'Live Session'}
+                                </h4>
+                                <div class="meta">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>${dateStr} at ${timeStr}</span>
+                                </div>
+                                <div class="session-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>${session.duration_minutes || 60} minutes</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-${session.meeting_type === 'zoom' ? 'video' : session.meeting_type === 'meet' ? 'google' : session.meeting_type === 'teams' ? 'microsoft' : 'link'}"></i>
+                                        <span>${session.meeting_type === 'meet' ? 'Google Meet' : session.meeting_type === 'zoom' ? 'Zoom' : session.meeting_type === 'teams' ? 'Microsoft Teams' : 'Custom Link'}</span>
+                                    </div>
+                                    <div class="detail-item" style="grid-column:1/-1">
+                                        ${timeIndicator}
+                                    </div>
+                                </div>
+                                <div class="session-actions">
+                                    ${session.meeting_link ? `
+                                        <a href="${session.meeting_link}" target="_blank" class="btn-join">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Join Now
+                                        </a>
+                                    ` : `
+                                        <a href="#" class="btn-join" onclick="alert('Meeting link not provided yet.'); return false;">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Join Now
+                                        </a>
+                                    `}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    list.innerHTML = `
+                        <div class="empty-live-sessions">
+                            <i class="fas fa-video-slash"></i>
+                            <h3>No Live Sessions Scheduled</h3>
+                            <p>Your instructor hasn't scheduled any live sessions yet. Check back later!</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading live sessions:', error);
+                document.getElementById('liveSessionsList').innerHTML = `
+                    <div class="empty-live-sessions">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Unable to Load Live Sessions</h3>
+                        <p>Please try refreshing the page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load exams for this course
+        async function loadExams() {
+            try {
+                const res = await fetch(`${API_BASE}/student/courses/${courseId}/exams`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                const list = document.getElementById('examsList');
+                if (data.success && data.exams && data.exams.length > 0) {
+                    list.innerHTML = data.exams.map(exam => {
+                        const start = exam.exam_date ? new Date(exam.exam_date) : null;
+                        const startText = start ? (start.toLocaleDateString() + ' ' + start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})) : 'Not scheduled';
+
+                        return `
+                            <div class="exam-card" style="background:#fff;padding:18px;border-radius:8px;margin-bottom:12px;border:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                                <div>
+                                    <h4 style="margin:0 0 6px 0">${exam.title || 'Exam'}</h4>
+                                    <div style="color:#666;font-size:13px">${exam.description || ''}</div>
+                                    <div style="margin-top:8px;color:#666;font-size:13px"><i class="fas fa-calendar-alt"></i> ${startText}</div>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                                    <div style="font-weight:700;color:#00a854;padding:6px 10px;border-radius:6px;background:#eaf9ef">AVAILABLE NOW</div>
+                                    <a href="/exam/${exam._id}/take" class="btn btn-primary" style="text-decoration:none;padding:10px 18px;border-radius:6px;color:#fff;">Start Exam</a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    list.innerHTML = '<p style="color:#666">No exams for this course.</p>';
+                }
+            } catch (err) {
+                console.error('Error loading exams:', err);
+                document.getElementById('examsList').innerHTML = '<p style="color:#999">Error loading exams.</p>';
+            }
+        }
+
+        // Switch course tabs
+        function switchCourseTab(tabName) {
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Chatbot functions
+        function toggleChatbot() {
+            const container = document.getElementById('chatbotContainer');
+            const toggle = document.getElementById('chatbotToggle');
+            
+            if (container.classList.contains('open')) {
+                container.classList.remove('open');
+                toggle.classList.remove('hidden');
+            } else {
+                container.classList.add('open');
+                toggle.classList.add('hidden');
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Add typing indicator
+            const messagesDiv = document.getElementById('chatbotMessages');
+            const typingId = 'typing-' + Date.now();
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = typingId;
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            try {
+                // Call Groq AI API
+                const res = await fetch(`${API_BASE}/ai/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        course_id: courseId,
+                        context: 'course_learning'
+                    })
+                });
+                
+                const data = await res.json();
+                console.log('Chatbot response:', data);
+                
+                // Remove typing indicator
+                document.getElementById(typingId)?.remove();
+                
+                if (data.success && data.response) {
+                    addMessage(data.response, 'bot');
+                } else {
+                    const errorMsg = data.message || data.error || 'Sorry, I encountered an error. Please try again.';
+                    console.error('Chatbot error response:', data);
+                    addMessage(errorMsg, 'bot');
+                }
+            } catch (error) {
+                console.error('Chatbot error:', error);
+                document.getElementById(typingId)?.remove();
+                addMessage('Sorry, I\'m having trouble connecting. Please try again later.', 'bot');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesDiv = document.getElementById('chatbotMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            // Format text with markdown-like styling for bot messages
+            let formattedText = text;
+            if (sender === 'bot') {
+                // Convert **text** to bold
+                formattedText = formattedText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                // Convert `code` to inline code
+                formattedText = formattedText.replace(/`([^`]+)`/g, '<code>$1</code>');
+                // Convert bullet points to proper list items with new lines
+                formattedText = formattedText.replace(/• /g, '<br>• ');
+                // Preserve line breaks
+                formattedText = formattedText.replace(/\n/g, '<br>');
+                // Style "Related Questions:" section
+                formattedText = formattedText.replace(/Related Questions:/g, '<br><br><strong>💡 Related Questions:</strong>');
+            } else {
+                formattedText = escapeHtml(formattedText);
+            }
+            
+            const avatar = sender === 'bot' 
+                ? '<div class="message-avatar"><i class="fas fa-robot"></i></div>'
+                : '<div class="message-avatar"><i class="fas fa-user"></i></div>';
+            
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="message-bubble">${formattedText}</div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load completed videos from server
+        async function loadCompletedVideos() {
+            try {
+                const response = await fetch(`${API_BASE}/student/courses/${courseId}/videos/progress`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.completed_videos) {
+                    // Add all completed video IDs to the set
+                    data.completed_videos.forEach(video => {
+                        completedVideos.add(video.video_id);
+                    });
+                    
+                    // Update UI with progress
+                    if (data.completed_videos.length > 0) {
+                        const progressPercent = Math.round((data.completed_videos.length / courseModules.length) * 100);
+                        updateProgressUI(progressPercent, data.completed_videos.length, courseModules.length);
+                    }
+                    
+                    // Re-render module list to show checkmarks
+                    renderModuleList();
+                }
+            } catch (error) {
+                console.error('Error loading completed videos:', error);
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const colors = {
+                success: '#00b894',
+                error: '#ff4757',
+                warning: '#ffa927',
+                info: '#0056d2'
+            };
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 350px;
+                font-weight: 600;
+                font-size: 14px;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Initialize
+        (async function init() {
+            renderModuleList(); // Render module list first
+            await loadCompletedVideos(); // Load completed videos
+            await loadCourseData();
+            await loadMaterials();
+            await loadLiveSessions();
+            await loadExams();
+            loadNotes();
+            loadBookmarks();
+            checkAttendance();
+            updateProgress();
+            
+            // Initialize YouTube player with first video
+            if (courseModules.length > 0) {
+                initYouTubePlayer(courseModules[0].videoId);
+            }
+        })();
+        
+        // Attendance functionality
+        let attendanceMarked = false;
+        
+        function checkAttendance() {
+            const today = new Date().toDateString();
+            const attendanceKey = `attendance_${courseId}_${today}`;
+            attendanceMarked = localStorage.getItem(attendanceKey) === 'true';
+            
+            if (attendanceMarked) {
+                const banner = document.getElementById('attendanceBanner');
+                const btn = document.getElementById('btnMarkAttendance');
+                banner.classList.add('marked');
+                banner.querySelector('h4').textContent = 'Attendance Marked ✓';
+                banner.querySelector('p').textContent = 'Great job! You\'re present for today\'s session';
+                btn.innerHTML = '<i class="fas fa-check-double"></i> Marked Present';
+                btn.disabled = true;
+            }
+        }
+        
+        async function markAttendance() {
+            const btn = document.getElementById('btnMarkAttendance');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/student/courses/${courseId}/attendance`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: new Date().toISOString(),
+                        status: 'present'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Mark as attended locally
+                const today = new Date().toDateString();
+                const attendanceKey = `attendance_${courseId}_${today}`;
+                localStorage.setItem(attendanceKey, 'true');
+                attendanceMarked = true;
+                
+                // Update UI
+                const banner = document.getElementById('attendanceBanner');
+                banner.classList.add('marked');
+                banner.querySelector('h4').textContent = 'Attendance Marked ✓';
+                banner.querySelector('p').textContent = 'Great job! You\'re present for today\'s session';
+                btn.innerHTML = '<i class="fas fa-check-double"></i> Marked Present';
+                
+                // Show success message
+                showNotification('Attendance marked successfully! 🎉', 'success');
+            } catch (error) {
+                console.error('Error marking attendance:', error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Mark Present';
+                showNotification('Failed to mark attendance. Please try again.', 'error');
+            }
+        }
+        
+        // Notes functionality
+        function toggleNotes() {
+            const section = document.getElementById('notesSection');
+            const bookmarks = document.getElementById('bookmarksSection');
+            bookmarks.classList.remove('active');
+            section.classList.toggle('active');
+            
+            if (section.classList.contains('active')) {
+                document.getElementById('noteInput').focus();
+            }
+        }
+        
+        function loadNotes() {
+            const notesKey = `notes_${courseId}`;
+            const notes = JSON.parse(localStorage.getItem(notesKey) || '[]');
+            displayNotes(notes);
+        }
+        
+        function displayNotes(notes) {
+            const list = document.getElementById('notesList');
+            if (notes.length === 0) {
+                list.innerHTML = '<p style="color:#666;text-align:center;padding:20px;">No notes yet. Start taking notes to remember key points!</p>';
+                return;
+            }
+            
+            list.innerHTML = notes.map((note, index) => `
+                <div class="note-item">
+                    <div class="note-header">
+                        <strong>Note ${index + 1}</strong>
+                        <span class="note-time">${new Date(note.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="note-content">${escapeHtml(note.content)}</div>
+                    <div class="note-actions">
+                        <button onclick="deleteNote(${index})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function saveNote() {
+            const input = document.getElementById('noteInput');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showNotification('Please write something in your note!', 'warning');
+                return;
+            }
+            
+            const notesKey = `notes_${courseId}`;
+            const notes = JSON.parse(localStorage.getItem(notesKey) || '[]');
+            
+            notes.unshift({
+                content: content,
+                timestamp: new Date().toISOString()
+            });
+            
+            localStorage.setItem(notesKey, JSON.stringify(notes));
+            input.value = '';
+            displayNotes(notes);
+            showNotification('Note saved successfully! 📝', 'success');
+        }
+        
+        function deleteNote(index) {
+            if (!confirm('Are you sure you want to delete this note?')) return;
+            
+            const notesKey = `notes_${courseId}`;
+            const notes = JSON.parse(localStorage.getItem(notesKey) || '[]');
+            notes.splice(index, 1);
+            localStorage.setItem(notesKey, JSON.stringify(notes));
+            displayNotes(notes);
+            showNotification('Note deleted', 'success');
+        }
+        
+        // Bookmarks functionality
+        function toggleBookmarks() {
+            const section = document.getElementById('bookmarksSection');
+            const notes = document.getElementById('notesSection');
+            notes.classList.remove('active');
+            section.classList.toggle('active');
+        }
+        
+        function loadBookmarks() {
+            const bookmarksKey = `bookmarks_${courseId}`;
+            const bookmarks = JSON.parse(localStorage.getItem(bookmarksKey) || '[]');
+            displayBookmarks(bookmarks);
+        }
+        
+        function displayBookmarks(bookmarks) {
+            const list = document.getElementById('bookmarksList');
+            if (bookmarks.length === 0) {
+                list.innerHTML = '<p style="color:#666;text-align:center;padding:20px;">No bookmarks yet. Add bookmarks to mark important parts of the course!</p>';
+                return;
+            }
+            
+            list.innerHTML = bookmarks.map((bookmark, index) => `
+                <div class="bookmark-item" onclick="alert('Jump to: ${bookmark.title}')">
+                    <div class="bookmark-info">
+                        <i class="fas fa-bookmark"></i>
+                        <div>
+                            <strong>${escapeHtml(bookmark.title)}</strong>
+                            <div style="font-size:12px;color:#666;margin-top:4px">${new Date(bookmark.timestamp).toLocaleString()}</div>
+                        </div>
+                    </div>
+                    <button class="btn" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation(); deleteBookmark(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function addBookmark() {
+            const title = prompt('Enter bookmark title:');
+            if (!title || !title.trim()) return;
+            
+            const bookmarksKey = `bookmarks_${courseId}`;
+            const bookmarks = JSON.parse(localStorage.getItem(bookmarksKey) || '[]');
+            
+            bookmarks.unshift({
+                title: title.trim(),
+                timestamp: new Date().toISOString()
+            });
+            
+            localStorage.setItem(bookmarksKey, JSON.stringify(bookmarks));
+            displayBookmarks(bookmarks);
+            showNotification('Bookmark added! 🔖', 'success');
+        }
+        
+        function deleteBookmark(index) {
+            event.stopPropagation();
+            if (!confirm('Remove this bookmark?')) return;
+            
+            const bookmarksKey = `bookmarks_${courseId}`;
+            const bookmarks = JSON.parse(localStorage.getItem(bookmarksKey) || '[]');
+            bookmarks.splice(index, 1);
+            localStorage.setItem(bookmarksKey, JSON.stringify(bookmarks));
+            displayBookmarks(bookmarks);
+        }
+        
+        // Progress tracking
+        function updateProgress() {
+            const progressKey = `progress_${courseId}`;
+            const progress = parseInt(localStorage.getItem(progressKey) || '0');
+            document.getElementById('courseProgress').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% Complete';
+            
+            // Auto-update progress based on time spent (simulate)
+            setTimeout(() => {
+                if (progress < 100) {
+                    localStorage.setItem(progressKey, Math.min(progress + 5, 100));
+                    updateProgress();
+                }
+            }, 30000); // Update every 30 seconds
+        }
+        
+        // Certificate download
+        async function downloadCertificate() {
+            const progressKey = `progress_${courseId}`;
+            const progress = parseInt(localStorage.getItem(progressKey) || '0');
+            
+            if (progress < 100) {
+                showNotification('Complete 100% of the course to get your certificate!', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/student/courses/${courseId}/certificate`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `certificate_${courseId}.pdf`;
+                    a.click();
+                    showNotification('Certificate downloaded! 🎓', 'success');
+                } else {
+                    showNotification('Certificate not available yet', 'warning');
+                }
+            } catch (error) {
+                console.error('Error downloading certificate:', error);
+                showNotification('Unable to download certificate', 'error');
+            }
+        }
+        
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: '#00b894',
+                error: '#ff4757',
+                warning: '#ffa927',
+                info: '#0056d2'
+            };
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+                font-weight: 600;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>

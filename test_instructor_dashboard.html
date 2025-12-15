@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Instructor Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-box { background: #f5f5f5; border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #fff; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Instructor Dashboard Test</h1>
+    
+    <div class="test-box">
+        <h3>Step 1: Check LocalStorage</h3>
+        <button onclick="checkLocalStorage()">Check Storage</button>
+        <div id="storage-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Step 2: Test Dashboard API</h3>
+        <button onclick="testDashboardAPI()">Test API</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>Step 3: Go to Dashboard</h3>
+        <button onclick="window.location.href='/instructor/dashboard'">Open Dashboard</button>
+    </div>
+    
+    <script>
+        function checkLocalStorage() {
+            const result = document.getElementById('storage-result');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            const userStr = localStorage.getItem('user_data') || localStorage.getItem('user');
+            
+            let html = '<h4>LocalStorage Contents:</h4>';
+            html += '<p><strong>Token:</strong> ' + (token ? token.substring(0, 30) + '...' : '❌ NOT FOUND') + '</p>';
+            html += '<p><strong>User Data:</strong> ' + (userStr ? userStr : '❌ NOT FOUND') + '</p>';
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    html += '<p><strong>User Name:</strong> ' + (user.name || 'N/A') + '</p>';
+                    html += '<p><strong>User Role:</strong> ' + (user.role || 'N/A') + '</p>';
+                    html += '<p><strong>User Email:</strong> ' + (user.email || 'N/A') + '</p>';
+                } catch (e) {
+                    html += '<p style="color:red">❌ Error parsing user data: ' + e.message + '</p>';
+                }
+            }
+            
+            result.innerHTML = html;
+        }
+        
+        async function testDashboardAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<p>⏳ Testing API...</p>';
+            
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            
+            if (!token) {
+                result.innerHTML = '<p style="color:red">❌ No token found. Please login first.</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/instructor/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                let html = '<h4>API Response:</h4>';
+                html += '<p><strong>Status:</strong> ' + response.status + ' ' + response.statusText + '</p>';
+                html += '<p><strong>Success:</strong> ' + data.success + '</p>';
+                
+                if (data.courses) {
+                    html += '<p><strong>Courses Count:</strong> ' + data.courses.length + '</p>';
+                    html += '<pre>' + JSON.stringify(data.courses[0] || {}, null, 2) + '</pre>';
+                } else {
+                    html += '<p style="color:orange">⚠️ No courses in response</p>';
+                }
+                
+                html += '<h4>Full Response:</h4>';
+                html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                result.innerHTML = html;
+            } catch (error) {
+                result.innerHTML = '<p style="color:red">❌ Error: ' + error.message + '</p>';
+            }
+        }
+        
+        // Auto-check on load
+        window.onload = () => {
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>

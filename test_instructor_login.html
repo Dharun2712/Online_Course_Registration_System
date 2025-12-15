@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Instructor Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .test-box { background: #f5f5f5; border: 2px solid #ddd; padding: 20px; margin: 15px 0; border-radius: 8px; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        .warning { background: #fff3cd; border-color: #ffc107; }
+        button { padding: 12px 24px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 14px; }
+        button:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        pre { background: #fff; padding: 10px; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+        h1 { color: #333; }
+        h3 { color: #555; margin-top: 0; }
+        .status { font-weight: bold; padding: 5px 10px; border-radius: 4px; display: inline-block; }
+        .status.ok { background: #28a745; color: white; }
+        .status.fail { background: #dc3545; color: white; }
+        input { padding: 10px; margin: 5px 0; width: 100%; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Instructor Login Test Suite</h1>
+    
+    <div class="test-box">
+        <h3>📋 Step 1: Check Current Authentication Status</h3>
+        <button onclick="checkAuthStatus()">Check Auth Status</button>
+        <button class="btn-danger" onclick="clearAuth()">Clear Auth Data</button>
+        <div id="auth-status"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>🔐 Step 2: Test Instructor Login</h3>
+        <div style="margin-bottom: 15px;">
+            <label><strong>Email:</strong></label>
+            <input type="email" id="instructor-email" placeholder="instructor@gmail.com" value="instructor@gmail.com">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label><strong>Password:</strong></label>
+            <input type="password" id="instructor-password" placeholder="password" value="password">
+        </div>
+        <button class="btn-success" onclick="testInstructorLogin()">Login as Instructor</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>🚀 Step 3: Test Dashboard Redirect</h3>
+        <button onclick="testDashboardAccess()">Test Dashboard Access</button>
+        <button class="btn-success" onclick="window.location.href='/instructor/dashboard'">Go to Dashboard</button>
+        <div id="dashboard-result"></div>
+    </div>
+    
+    <div class="test-box">
+        <h3>📊 Step 4: Test Dashboard API</h3>
+        <button onclick="testDashboardAPI()">Test Dashboard API</button>
+        <div id="api-result"></div>
+    </div>
+
+    <script src="/static/js/api-client.js"></script>
+    <script>
+        function checkAuthStatus() {
+            const result = document.getElementById('auth-status');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            const userStr = localStorage.getItem('user_data') || localStorage.getItem('user');
+            
+            let html = '<div style="margin-top: 15px;">';
+            
+            if (token) {
+                html += '<p>✅ <strong>Token Found:</strong> ' + token.substring(0, 40) + '...</p>';
+            } else {
+                html += '<p>❌ <strong>Token:</strong> Not found</p>';
+            }
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    html += '<p>✅ <strong>User Data:</strong></p>';
+                    html += '<pre>' + JSON.stringify(user, null, 2) + '</pre>';
+                    
+                    if (user.role === 'instructor') {
+                        html += '<p class="status ok">✓ User is Instructor</p>';
+                    } else {
+                        html += '<p class="status fail">✗ User role: ' + user.role + '</p>';
+                    }
+                } catch (e) {
+                    html += '<p>❌ <strong>User Data:</strong> Invalid JSON</p>';
+                }
+            } else {
+                html += '<p>❌ <strong>User Data:</strong> Not found</p>';
+            }
+            
+            html += '</div>';
+            result.innerHTML = html;
+        }
+        
+        function clearAuth() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user_data');
+            localStorage.removeItem('user');
+            alert('✅ Authentication data cleared!');
+            checkAuthStatus();
+        }
+        
+        async function testInstructorLogin() {
+            const result = document.getElementById('login-result');
+            result.innerHTML = '<p style="color: #007bff;">⏳ Attempting login...</p>';
+            
+            const email = document.getElementById('instructor-email').value;
+            const password = document.getElementById('instructor-password').value;
+            
+            if (!email || !password) {
+                result.innerHTML = '<p style="color: red;">❌ Please enter email and password</p>';
+                return;
+            }
+            
+            try {
+                console.log('Attempting login with:', { email });
+                const data = await api.login(email, password);
+                console.log('Login response:', data);
+                
+                let html = '<div style="margin-top: 15px;">';
+                
+                if (data.success) {
+                    html += '<p class="status ok">✓ Login Successful!</p>';
+                    html += '<p><strong>User:</strong> ' + data.user.name + '</p>';
+                    html += '<p><strong>Email:</strong> ' + data.user.email + '</p>';
+                    html += '<p><strong>Role:</strong> ' + data.user.role + '</p>';
+                    
+                    if (data.user.role === 'instructor') {
+                        html += '<p style="color: green; font-weight: bold;">✅ Role is INSTRUCTOR - Redirect will work!</p>';
+                        html += '<p>You will be redirected to: <code>/instructor/dashboard</code></p>';
+                    } else {
+                        html += '<p style="color: red; font-weight: bold;">❌ Role is NOT instructor: ' + data.user.role + '</p>';
+                    }
+                    
+                    html += '<h4>Full Response:</h4>';
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    html += '<p class="status fail">✗ Login Failed</p>';
+                    html += '<p style="color: red;">Error: ' + (data.error || data.message || 'Unknown error') + '</p>';
+                }
+                
+                html += '</div>';
+                result.innerHTML = html;
+                
+                // Auto-check auth after login
+                setTimeout(checkAuthStatus, 500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                result.innerHTML = '<p style="color: red;">❌ Error: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testDashboardAccess() {
+            const result = document.getElementById('dashboard-result');
+            result.innerHTML = '<p style="color: #007bff;">⏳ Testing dashboard access...</p>';
+            
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            
+            if (!token) {
+                result.innerHTML = '<p style="color: red;">❌ No token found. Please login first.</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/instructor/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                let html = '<div style="margin-top: 15px;">';
+                html += '<p><strong>Status:</strong> ' + response.status + ' ' + response.statusText + '</p>';
+                
+                if (response.ok) {
+                    html += '<p class="status ok">✓ Dashboard Accessible!</p>';
+                    html += '<p>The page loaded successfully. You can safely navigate to the dashboard.</p>';
+                } else {
+                    html += '<p class="status fail">✗ Access Denied</p>';
+                    html += '<p>Status code: ' + response.status + '</p>';
+                }
+                
+                html += '</div>';
+                result.innerHTML = html;
+                
+            } catch (error) {
+                result.innerHTML = '<p style="color: red;">❌ Error: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testDashboardAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<p style="color: #007bff;">⏳ Testing dashboard API...</p>';
+            
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            
+            if (!token) {
+                result.innerHTML = '<p style="color: red;">❌ No token found. Please login first.</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/instructor/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                let html = '<div style="margin-top: 15px;">';
+                html += '<p><strong>API Status:</strong> ' + response.status + ' ' + response.statusText + '</p>';
+                html += '<p><strong>Success:</strong> ' + data.success + '</p>';
+                
+                if (data.courses) {
+                    html += '<p><strong>Courses Count:</strong> ' + data.courses.length + '</p>';
+                    
+                    if (data.courses.length > 0) {
+                        html += '<h4>First Course:</h4>';
+                        html += '<pre>' + JSON.stringify(data.courses[0], null, 2) + '</pre>';
+                    }
+                } else {
+                    html += '<p style="color: orange;">⚠️ No courses in response</p>';
+                }
+                
+                html += '<h4>Full API Response:</h4>';
+                html += '<pre style="max-height: 300px; overflow: auto;">' + JSON.stringify(data, null, 2) + '</pre>';
+                html += '</div>';
+                
+                result.innerHTML = html;
+                
+            } catch (error) {
+                result.innerHTML = '<p style="color: red;">❌ Error: ' + error.message + '</p>';
+            }
+        }
+        
+        // Auto-check on load
+        window.onload = () => {
+            checkAuthStatus();
+        };
+    </script>
+</body>
+</html>

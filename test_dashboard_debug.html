@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Dashboard API</title>
+</head>
+<body>
+    <h1>Testing Instructor Dashboard API</h1>
+    <div id="output"></div>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        // Get token from localStorage
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        
+        output.innerHTML += `<p><strong>Token:</strong> ${token ? token.substring(0, 30) + '...' : 'NOT FOUND'}</p>`;
+        output.innerHTML += `<p><strong>User:</strong> ${user || 'NOT FOUND'}</p>`;
+        
+        if (user) {
+            const userData = JSON.parse(user);
+            output.innerHTML += `<p><strong>User Role:</strong> ${userData.role}</p>`;
+            output.innerHTML += `<p><strong>User Name:</strong> ${userData.name}</p>`;
+        }
+        
+        if (token) {
+            // Test API call
+            fetch('/api/instructor/dashboard', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                output.innerHTML += `<p><strong>API Response Status:</strong> ${response.status}</p>`;
+                return response.json();
+            })
+            .then(data => {
+                output.innerHTML += `<p><strong>API Response:</strong></p>`;
+                output.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            })
+            .catch(error => {
+                output.innerHTML += `<p style="color: red;"><strong>Error:</strong> ${error}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>

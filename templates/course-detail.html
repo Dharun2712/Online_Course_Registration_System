@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CourseHub | Artificial Intelligence Basics</title>
+<style>
+/* ======= GLOBAL ======= */
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+body {background:#f4f7fa; color:#333;}
+a {text-decoration:none; color:inherit;}
+img {max-width:100%; border-radius:8px;}
+button {cursor:pointer; border:none; outline:none;}
+
+/* ======= NAVBAR ======= */
+header {
+  background:#fff;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:15px 50px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  position:sticky; top:0; z-index:10;
+}
+.logo {font-size:1.5rem; font-weight:700; color:#0056d2;}
+.nav-links {display:flex; gap:30px; align-items:center;}
+.nav-links a {color:#333; font-weight:500; transition:0.3s;}
+.nav-links a:hover {color:#0056d2;}
+.login-btn {
+  background:#0056d2; color:#fff; padding:8px 16px; border-radius:25px;
+  transition:0.3s;
+}
+.login-btn:hover {background:#003c91;}
+
+/* ======= HERO ======= */
+.hero {
+  background:linear-gradient(135deg,#0056d2,#007bff);
+  color:#fff; padding:60px 20px; text-align:center;
+}
+.hero h1 {font-size:2.5rem; margin-bottom:10px;}
+.hero p {font-size:1.1rem; margin-bottom:20px;}
+.hero .enroll-btn {
+  padding:12px 25px; border-radius:25px; background:#fff; color:#0056d2; font-weight:600;
+  transition:0.3s;
+}
+.hero .enroll-btn:hover {background:#e6e6e6;}
+
+/* ======= MAIN CONTENT ======= */
+.container {display:flex; max-width:1200px; margin:30px auto; gap:20px; padding:0 20px;}
+.left {flex:3;}
+.right {flex:1;}
+
+/* ======= VIDEO PREVIEW ======= */
+.course-video {border-radius:10px; margin-bottom:20px; overflow:hidden; position:relative; padding-top:56.25%;}
+.course-video iframe {position:absolute; top:0; left:0; width:100%; height:100%;}
+
+/* ======= COURSE INFO ======= */
+.course-title {font-size:2rem; margin-bottom:10px;}
+.course-meta {color:#555; margin-bottom:15px;}
+.rating {color:#f1c40f;}
+
+/* ======= TABS ======= */
+.tabs {display:flex; gap:15px; margin-bottom:20px; cursor:pointer; flex-wrap:wrap;}
+.tab {padding:10px 20px; border-radius:10px; background:#e9efff; transition:0.3s;}
+.tab.active {background:#0056d2; color:#fff;}
+.tab-content {background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:20px;}
+
+/* ======= INSTRUCTOR ======= */
+.instructor {display:flex; gap:15px; align-items:center; background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:20px;}
+.instructor img {height:80px; width:80px; border-radius:50%; object-fit:cover;}
+.instructor-info h4 {margin-bottom:5px; color:#0056d2;}
+.instructor-info p {color:#555; font-size:0.9rem;}
+
+/* ======= REVIEWS ======= */
+.reviews {margin-bottom:20px;}
+.review {background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:15px;}
+.review h5 {color:#0056d2; margin-bottom:5px;}
+.review p {color:#555; font-size:0.9rem;}
+
+/* ======= RECOMMENDATIONS ======= */
+.recommendation {background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.05); margin-bottom:15px; transition:0.3s;}
+.recommendation:hover {transform:translateY(-5px);}
+.recommendation img {height:100px; object-fit:cover; margin-bottom:10px;}
+.recommendation h4 {font-size:1rem; color:#0056d2;}
+
+/* ======= FOOTER ======= */
+footer {background:#003c91; color:#fff; padding:40px 5%; text-align:center; margin-top:40px;}
+footer a {color:#fff; margin:0 10px;}
+footer a:hover {text-decoration:underline;}
+
+/* ======= RESPONSIVE ======= */
+@media(max-width:900px){.container{flex-direction:column;}.right{order:-1; margin-bottom:20px;}}
+@media(max-width:600px){.hero h1{font-size:2rem;}}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header>
+  <div class="logo">CourseHub</div>
+  <nav class="nav-links">
+    <a href="/">Home</a>
+    <a href="/courses">Courses</a>
+    <a href="/about">About</a>
+    <a href="/login" class="login-btn" id="authBtn">Join for Free</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="heroSection">
+  <h1 id="courseTitle">Loading...</h1>
+  <p id="courseMeta">Loading course details...</p>
+  <button class="enroll-btn" id="enrollBtn" style="display:none;" onclick="enrollInCourse()">Enroll Now</button>
+  <p id="enrolledStatus" style="display:none; color:#fff; font-weight:600;">✓ You are enrolled in this course</p>
+</section>
+
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="left">
+    <!-- VIDEO PREVIEW -->
+    <div class="course-video" id="videoContainer">
+      <p style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#666;">Loading video...</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" data-tab="description">Description</div>
+      <div class="tab" data-tab="syllabus">Materials</div>
+      <div class="tab" data-tab="reviews">Reviews</div>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div id="description" class="tab-content">
+      <h3>Course Description</h3>
+      <p id="courseDescription">Loading...</p>
+    </div>
+    <div id="syllabus" class="tab-content" style="display:none;">
+      <h3>Course Materials</h3>
+      <ul id="courseMaterials">
+        <li>Loading...</li>
+      </ul>
+    </div>
+    <div id="reviews" class="tab-content" style="display:none;">
+      <h3>Reviews</h3>
+      <div id="reviewsContainer">
+        <p>Loading reviews...</p>
+      </div>
+    </div>
+
+    <!-- INSTRUCTOR -->
+    <div class="instructor" id="instructorSection">
+      <img src="https://source.unsplash.com/100x100/?teacher" alt="Instructor" id="instructorImg">
+      <div class="instructor-info">
+        <h4 id="instructorName">Loading...</h4>
+        <p id="instructorBio">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT RECOMMENDATIONS -->
+  <div class="right">
+    <h3>Recommended Courses</h3>
+    <div id="recommendationsContainer">
+      <p style="text-align:center; color:#666;">Loading...</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 CourseHub | Learn Anytime, Anywhere</p>
+  <p>
+    <a href="/about">About</a> | 
+    <a href="#">Contact</a> | 
+    <a href="#">Privacy</a>
+  </p>
+</footer>
+
+<script src="/static/js/api-client.js"></script>
+<script>
+let currentCourse = null;
+let courseId = null;
+
+// Get course ID from URL
+function getCourseIdFromURL() {
+  const pathParts = window.location.pathname.split('/');
+  return pathParts[pathParts.length - 1];
+}
+
+// Check authentication and update UI
+if (api.isAuthenticated()) {
+  const user = api.getUser();
+  document.getElementById('authBtn').textContent = user.name;
+  document.getElementById('authBtn').href = user.role === 'student' ? '/student/dashboard' : 
+                                             user.role === 'instructor' ? '/instructor/dashboard' : '/admin/dashboard';
+}
+
+// Load course details
+async function loadCourseDetails() {
+  courseId = getCourseIdFromURL();
+  
+  if (!courseId) {
+    alert('Invalid course ID');
+    window.location.href = '/courses';
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/api/student/courses/${courseId}`, {
+      headers: api.isAuthenticated() ? { 'Authorization': `Bearer ${api.getToken()}` } : {}
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.course) {
+      currentCourse = data.course;
+      displayCourseDetails(data.course);
+      await checkEnrollmentStatus();
+      await loadRecommendations();
+    } else {
+      alert('Course not found');
+      window.location.href = '/courses';
+    }
+  } catch (error) {
+    console.error('Error loading course:', error);
+    alert('Error loading course details');
+  }
+}
+
+function displayCourseDetails(course) {
+  // Update hero section
+  document.getElementById('courseTitle').textContent = course.title;
+  document.getElementById('courseMeta').innerHTML = `
+    by ${course.instructor_name || 'Instructor'} | 
+    ⭐ ${course.rating || '4.5'} | 
+    ${course.price > 0 ? '$' + course.price : 'Free'} | 
+    ${course.level || 'Beginner'}
+  `;
+  
+  // Update video
+  if (course.video_url) {
+    document.getElementById('videoContainer').innerHTML = `
+      <iframe src="${course.video_url}" 
+        title="Course video" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        allowfullscreen></iframe>
+    `;
+  } else if (course.thumbnail) {
+    document.getElementById('videoContainer').innerHTML = `
+      <img src="${course.thumbnail}" alt="${course.title}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
+    `;
+  }
+  
+  // Update description
+  document.getElementById('courseDescription').textContent = course.description || 'No description available';
+  
+  // Update materials
+  const materialsContainer = document.getElementById('courseMaterials');
+  if (course.materials && course.materials.length > 0) {
+    materialsContainer.innerHTML = '';
+    course.materials.forEach(material => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${material.title}</strong>: ${material.type || 'Resource'}`;
+      if (material.url) {
+        li.innerHTML += ` - <a href="${material.url}" target="_blank" style="color:#0056d2;">View</a>`;
+      }
+      materialsContainer.appendChild(li);
+    });
+  } else {
+    materialsContainer.innerHTML = '<li>No materials available yet</li>';
+  }
+  
+  // Update instructor
+  document.getElementById('instructorName').textContent = course.instructor_name || 'Instructor';
+  document.getElementById('instructorBio').textContent = course.instructor_email || '';
+}
+
+async function checkEnrollmentStatus() {
+  if (!api.isAuthenticated() || !courseId) {
+    document.getElementById('enrollBtn').style.display = 'inline-block';
+    return;
+  }
+  
+  try {
+    const response = await fetch('/api/student/my-courses', {
+      headers: { 'Authorization': `Bearer ${api.getToken()}` }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.courses) {
+      const isEnrolled = data.courses.some(c => c.course_id === courseId);
+      
+      if (isEnrolled) {
+        document.getElementById('enrolledStatus').style.display = 'block';
+        document.getElementById('enrollBtn').style.display = 'none';
+      } else {
+        document.getElementById('enrollBtn').style.display = 'inline-block';
+        document.getElementById('enrolledStatus').style.display = 'none';
+      }
+    } else {
+      document.getElementById('enrollBtn').style.display = 'inline-block';
+    }
+  } catch (error) {
+    console.error('Error checking enrollment:', error);
+    document.getElementById('enrollBtn').style.display = 'inline-block';
+  }
+}
+
+async function enrollInCourse() {
+  if (!api.isAuthenticated()) {
+    alert('Please login to enroll in courses');
+    window.location.href = '/login';
+    return;
+  }
+  
+  if (currentCourse.price > 0) {
+    window.location.href = `/enroll?course_id=${courseId}`;
+  } else {
+    try {
+      const result = await api.enrollInCourse(courseId);
+      
+      if (result.success) {
+        alert('Successfully enrolled in course!');
+        window.location.href = '/student/dashboard';
+      } else {
+        alert(result.message || 'Enrollment failed');
+      }
+    } catch (error) {
+      alert('Error enrolling in course');
+    }
+  }
+}
+
+async function loadRecommendations() {
+  const container = document.getElementById('recommendationsContainer');
+  
+  try {
+    const response = await fetch('/api/student/courses?page=1&per_page=3', {
+      headers: api.isAuthenticated() ? { 'Authorization': `Bearer ${api.getToken()}` } : {}
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.courses && data.courses.length > 0) {
+      container.innerHTML = '';
+      data.courses.filter(c => c._id !== courseId).slice(0, 3).forEach(course => {
+        const rec = document.createElement('div');
+        rec.className = 'recommendation';
+        rec.onclick = () => window.location.href = `/course/${course._id}`;
+        rec.innerHTML = `
+          <img src="${course.thumbnail || 'https://source.unsplash.com/200x100/?course'}" alt="${course.title}">
+          <h4>${course.title}</h4>
+          <p style="color:#666; font-size:0.85rem;">${course.price > 0 ? '$' + course.price : 'Free'}</p>
+        `;
+        container.appendChild(rec);
+      });
+    } else {
+      container.innerHTML = '<p style="text-align:center;">No recommendations available</p>';
+    }
+  } catch (error) {
+    console.error('Error loading recommendations:', error);
+    container.innerHTML = '<p style="text-align:center;">Error loading recommendations</p>';
+  }
+}
+
+// Tab functionality
+const tabs = document.querySelectorAll('.tab');
+const contents = document.querySelectorAll('.tab-content');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    contents.forEach(c => c.style.display='none');
+    document.getElementById(tab.dataset.tab).style.display='block';
+  });
+});
+
+// Initialize
+loadCourseDetails();
+</script>
+
+</body>
+</html>

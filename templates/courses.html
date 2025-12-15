@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Courses - LearnHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f7f9fa;
+            color: #1f1f1f;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0056d2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #0056d2;
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background: #0056d2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: #1f1f1f;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #0056d2;
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        /* ========== SIDEBAR FILTERS ========== */
+        .sidebar {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 88px;
+        }
+
+        .filter-section {
+            margin-bottom: 32px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1f1f1f;
+        }
+
+        .filter-options {
+            list-style: none;
+        }
+
+        .filter-option {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .filter-option label {
+            cursor: pointer;
+            font-size: 15px;
+            color: #666;
+            flex: 1;
+        }
+
+        .filter-option:hover label {
+            color: #0056d2;
+        }
+
+        .filter-count {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .filter-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 16px 0;
+        }
+
+        .btn-clear {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .btn-clear:hover {
+            border-color: #0056d2;
+            color: #0056d2;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            min-height: 100vh;
+        }
+
+        .content-header {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+
+        .content-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1f1f1f;
+        }
+
+        .content-header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .results-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .results-count {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .sort-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sort-dropdown label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f1f1f;
+        }
+
+        .sort-dropdown select {
+            padding: 10px 36px 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #fff;
+            color: #1f1f1f;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .sort-dropdown select:focus {
+            outline: none;
+            border-color: #0056d2;
+        }
+
+        /* ========== COURSE GRID ========== */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .course-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .course-content {
+            padding: 20px;
+        }
+
+        .course-provider {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .course-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f1f1f;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .course-meta i {
+            color: #0056d2;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .course-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0056d2;
+        }
+
+        .course-price.free {
+            color: #00b894;
+        }
+
+        .course-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #ffa927;
+        }
+
+        /* ========== LOADING & EMPTY STATES ========== */
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1/-1;
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            color: #0056d2;
+            margin-bottom: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1/-1;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #e0e0e0;
+            margin-bottom: 24px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f1f1f;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* ========== PAGINATION ========== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 48px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e0e0e0;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .page-btn:hover {
+            border-color: #0056d2;
+            color: #0056d2;
+        }
+
+        .page-btn.active {
+            background: #0056d2;
+            color: #fff;
+            border-color: #0056d2;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>LearnHub</span>
+            </a>
+            <div class="search-box">
+                <input type="text" placeholder="Search for courses..." id="searchInput">
+                <button onclick="searchCourses()"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-right">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/student/dashboard" class="nav-link" id="dashboardLink" style="display:none;">My Learning</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- SIDEBAR FILTERS -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <h3 class="filter-title">Category</h3>
+                <ul class="filter-options">
+                    <li class="filter-option">
+                        <input type="checkbox" id="cat-business" value="Business" onchange="applyFilters()">
+                        <label for="cat-business">Business</label>
+                        <span class="filter-count">(250)</span>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="cat-technology" value="Technology" onchange="applyFilters()">
+                        <label for="cat-technology">Technology</label>
+                        <span class="filter-count">(400)</span>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="cat-design" value="Design" onchange="applyFilters()">
+                        <label for="cat-design">Design</label>
+                        <span class="filter-count">(180)</span>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="cat-data" value="Data Science" onchange="applyFilters()">
+                        <label for="cat-data">Data Science</label>
+                        <span class="filter-count">(320)</span>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="cat-marketing" value="Marketing" onchange="applyFilters()">
+                        <label for="cat-marketing">Marketing</label>
+                        <span class="filter-count">(150)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">Level</h3>
+                <ul class="filter-options">
+                    <li class="filter-option">
+                        <input type="checkbox" id="level-beginner" value="Beginner" onchange="applyFilters()">
+                        <label for="level-beginner">Beginner</label>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="level-intermediate" value="Intermediate" onchange="applyFilters()">
+                        <label for="level-intermediate">Intermediate</label>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="level-advanced" value="Advanced" onchange="applyFilters()">
+                        <label for="level-advanced">Advanced</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <div class="filter-section">
+                <h3 class="filter-title">Price</h3>
+                <ul class="filter-options">
+                    <li class="filter-option">
+                        <input type="checkbox" id="price-free" value="free" onchange="applyFilters()">
+                        <label for="price-free">Free</label>
+                    </li>
+                    <li class="filter-option">
+                        <input type="checkbox" id="price-paid" value="paid" onchange="applyFilters()">
+                        <label for="price-paid">Paid</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="filter-divider"></div>
+
+            <button class="btn-clear" onclick="clearFilters()">Clear All Filters</button>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 id="pageTitle">Explore All Courses</h1>
+                <p id="pageSubtitle">Discover courses from world-class instructors</p>
+            </div>
+
+            <div class="results-bar">
+                <div class="results-count" id="resultsCount">Loading courses...</div>
+                <div class="sort-dropdown">
+                    <label>Sort by:</label>
+                    <select id="sortSelect" onchange="sortCourses()">
+                        <option value="popular">Most Popular</option>
+                        <option value="newest">Newest First</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="course-grid" id="courseGrid">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading courses...</p>
+                </div>
+            </div>
+
+            <div class="pagination" id="pagination" style="display:none;">
+                <button class="page-btn" onclick="prevPage()" id="prevBtn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn" onclick="nextPage()" id="nextBtn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        let allCourses = [];
+        let filteredCourses = [];
+        let currentPage = 1;
+        const coursesPerPage = 12;
+
+        // Check authentication
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+
+        if (token && user) {
+            document.getElementById('dashboardLink').style.display = 'block';
+        }
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        const category = urlParams.get('category');
+
+        // Load courses
+        async function loadCourses() {
+            try {
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(`${API_BASE}/student/courses?page=1&per_page=100`, {
+                    headers: headers
+                });
+                const data = await response.json();
+
+                if (data.success && data.courses) {
+                    allCourses = data.courses;
+                    
+                    // Apply URL filters
+                    if (searchQuery) {
+                        document.getElementById('searchInput').value = searchQuery;
+                        document.getElementById('pageTitle').textContent = `Search results for "${searchQuery}"`;
+                    }
+                    if (category) {
+                        document.getElementById('pageTitle').textContent = category + ' Courses';
+                        document.querySelector(`input[value="${category}"]`)?.setAttribute('checked', true);
+                    }
+
+                    applyFilters();
+                } else {
+                    showEmpty();
+                }
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                showEmpty();
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Get selected categories
+            const categories = Array.from(document.querySelectorAll('input[id^="cat-"]:checked'))
+                .map(cb => cb.value);
+            
+            // Get selected levels
+            const levels = Array.from(document.querySelectorAll('input[id^="level-"]:checked'))
+                .map(cb => cb.value);
+            
+            // Get price filters
+            const priceFilters = Array.from(document.querySelectorAll('input[id^="price-"]:checked'))
+                .map(cb => cb.value);
+
+            // Filter courses
+            filteredCourses = allCourses.filter(course => {
+                // Search filter
+                if (searchTerm && !course.title.toLowerCase().includes(searchTerm) && 
+                    !(course.description || '').toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+
+                // Category filter
+                if (categories.length > 0 && !categories.includes(course.category)) {
+                    return false;
+                }
+
+                // Level filter
+                if (levels.length > 0 && !levels.includes(course.level)) {
+                    return false;
+                }
+
+                // Price filter
+                if (priceFilters.length > 0) {
+                    if (priceFilters.includes('free') && course.price > 0) {
+                        return false;
+                    }
+                    if (priceFilters.includes('paid') && course.price === 0) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            currentPage = 1;
+            renderCourses();
+        }
+
+        // Sort courses
+        function sortCourses() {
+            const sortBy = document.getElementById('sortSelect').value;
+
+            filteredCourses.sort((a, b) => {
+                switch(sortBy) {
+                    case 'newest':
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    case 'rating':
+                        return (b.rating || 0) - (a.rating || 0);
+                    case 'price-low':
+                        return (a.price || 0) - (b.price || 0);
+                    case 'price-high':
+                        return (b.price || 0) - (a.price || 0);
+                    default: // popular
+                        return (b.enrolled_count || 0) - (a.enrolled_count || 0);
+                }
+            });
+
+            renderCourses();
+        }
+
+        // Render courses
+        function renderCourses() {
+            const grid = document.getElementById('courseGrid');
+            const start = (currentPage - 1) * coursesPerPage;
+            const end = start + coursesPerPage;
+            const coursesToShow = filteredCourses.slice(start, end);
+
+            // Update results count
+            document.getElementById('resultsCount').textContent = 
+                `${filteredCourses.length} course${filteredCourses.length !== 1 ? 's' : ''} found`;
+
+            if (coursesToShow.length === 0) {
+                showEmpty();
+                return;
+            }
+
+            grid.innerHTML = '';
+            coursesToShow.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.onclick = () => window.location.href = `/course/${course._id}`;
+                
+                // Generate thumbnail path from course title
+                const slugify = (text) => {
+                    return String(text).toLowerCase().trim()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/(^-|-$)/g, '');
+                };
+                const thumbnailPath = course.thumbnail || `/static/course_images/${slugify(course.title)}.jpg`;
+                
+                card.innerHTML = `
+                    <img class="course-image" src="${thumbnailPath}" alt="${course.title}" onerror="this.src='https://source.unsplash.com/400x200/?course,education'">
+                    <div class="course-content">
+                        <div class="course-provider">${course.instructor_name || 'LEARNHUB'}</div>
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description || 'Learn essential skills with this comprehensive course.'}</p>
+                        <div class="course-meta">
+                            <span><i class="far fa-clock"></i> ${course.duration || 'Self-paced'}</span>
+                            <span><i class="fas fa-signal"></i> ${course.level || 'Beginner'}</span>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-price ${course.price === 0 ? 'free' : ''}">
+                                ${course.price > 0 ? '$' + course.price : 'Free'}
+                            </div>
+                            <div class="course-rating">
+                                <span class="stars">★★★★★</span>
+                                <span>${course.rating || '4.8'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+
+            // Update pagination
+            updatePagination();
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            if (totalPages <= 1) {
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('pagination').style.display = 'flex';
+            // Update pagination buttons (simplified)
+        }
+
+        // Page navigation
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderCourses();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderCourses();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Search courses
+        function searchCourses() {
+            applyFilters();
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCourses();
+            }
+        });
+
+        // Clear filters
+        function clearFilters() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+
+        // Show empty state
+        function showEmpty() {
+            document.getElementById('courseGrid').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No courses found</h3>
+                    <p>Try adjusting your filters or search terms</p>
+                </div>
+            `;
+            document.getElementById('resultsCount').textContent = '0 courses found';
+        }
+
+        // Initialize
+        loadCourses();
+    </script>
+</body>
+</html>

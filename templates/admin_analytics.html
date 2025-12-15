@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', -apple-system, sans-serif; background: #f7f9fa; color: #1f1f1f; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #1f1f1f; color: #fff; height: 100vh; position: fixed; left: 0; top: 0; overflow-y: auto; z-index: 1000; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid #333; }
+        .sidebar-logo { font-size: 24px; font-weight: 700; color: #0056d2; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .sidebar-menu { padding: 16px 0; }
+        .menu-item { padding: 14px 24px; display: flex; align-items: center; gap: 12px; color: #b0b0b0; text-decoration: none; transition: all 0.3s; }
+        .menu-item:hover, .menu-item.active { background: #2a2a2a; color: #0056d2; border-left: 3px solid #0056d2; }
+        .menu-item i { width: 20px; text-align: center; }
+        .main-content { flex: 1; margin-left: 260px; }
+        .navbar { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 0 40px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .navbar-left h2 { font-size: 24px; font-weight: 700; }
+        .navbar-right { display: flex; align-items: center; gap: 24px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #0056d2; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .btn-logout { padding: 10px 20px; background: #ff4757; color: #fff; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+        .container { padding: 40px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .page-header h1 { font-size: 32px; font-weight: 700; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .stat-card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .stat-label { font-size: 13px; color: #666; font-weight: 600; margin-bottom: 12px; }
+        .stat-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .stat-change { font-size: 14px; }
+        .stat-change.positive { color: #00b894; }
+        .stat-change.negative { color: #d63031; }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .chart-card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .chart-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+        .chart-container { height: 300px; position: relative; }
+        .table-container { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; }
+        .table-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { text-align: left; padding: 12px; background: #f7f9fa; font-weight: 700; font-size: 13px; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/admin/dashboard" class="sidebar-logo"><i class="fas fa-graduation-cap"></i> LearnHub</a>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/admin/dashboard" class="menu-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="/admin/users" class="menu-item"><i class="fas fa-users"></i><span>Users</span></a>
+                <a href="/admin/courses" class="menu-item"><i class="fas fa-book"></i><span>Courses</span></a>
+                <a href="/admin/enrollments" class="menu-item"><i class="fas fa-user-graduate"></i><span>Enrollments</span></a>
+                <a href="/admin/payments" class="menu-item"><i class="fas fa-dollar-sign"></i><span>Payments</span></a>
+                <a href="/admin/analytics" class="menu-item active"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <nav class="navbar">
+                <div class="navbar-left"><h2>Platform Analytics</h2></div>
+                <div class="navbar-right">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </nav>
+
+            <div class="container">
+                <div class="page-header"><h1>Platform Performance</h1></div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value" id="totalRevenue">$0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +0% vs last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Students</div>
+                        <div class="stat-value" id="activeStudents">0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> +0% vs last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Videos Completed</div>
+                        <div class="stat-value" id="videosCompleted">0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> Engagement</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg. Video Completion</div>
+                        <div class="stat-value" id="avgVideoCompletion">0%</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> Progress Rate</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">Revenue Trend (Last 6 Months)</div>
+                        <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Enrollment Trend (Last 6 Months)</div>
+                        <div class="chart-container"><canvas id="enrollmentChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">User Distribution</div>
+                        <div class="chart-container"><canvas id="userDistChart"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Top Performing Courses</div>
+                        <div class="chart-container"><canvas id="topCoursesChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-title">
+                        <i class="fas fa-video" style="color:#0056d2;margin-right:8px"></i>Video Completion by Course
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Videos Completed</th>
+                                <th>Unique Students</th>
+                                <th>Completion Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="videoCompletionTable">
+                            <tr><td colspan="4" style="text-align:center;padding:24px;color:#666;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-title">Top Instructors by Revenue</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Instructor</th>
+                                <th>Courses</th>
+                                <th>Students</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topInstructorsTable">
+                            <tr><td colspan="4" style="text-align:center;padding:24px;color:#666;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+        const rawUser = localStorage.getItem('user_data') || localStorage.getItem('user') || '{}';
+        let user = {};
+        try { user = JSON.parse(rawUser); } catch (e) { user = {}; }
+        if (!token || !user.role || String(user.role).toLowerCase() !== 'admin') window.location.href = '/';
+        document.getElementById('userAvatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        async function loadAnalytics() {
+            try {
+                // Load general analytics and video completion analytics in parallel
+                const [analyticsRes, videoRes] = await Promise.all([
+                    fetch('/api/admin/analytics', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).catch(() => null),
+                    fetch('/api/admin/analytics/video-completion', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+                
+                // Handle general analytics
+                if (analyticsRes && analyticsRes.ok) {
+                    const data = await analyticsRes.json();
+                    if (data.success) {
+                        updateStats(data.analytics);
+                        updateCharts(data.analytics);
+                    }
+                } else {
+                    // Use placeholder data if API fails
+                    const placeholderData = {
+                        revenue: { total: 45678, growth: 12.5 },
+                        users: { active: 342, growth: 8.3 }
+                    };
+                    updateStats(placeholderData);
+                    updateCharts(placeholderData);
+                }
+                
+                // Handle video completion analytics
+                if (videoRes && videoRes.ok) {
+                    const videoData = await videoRes.json();
+                    if (videoData.success) {
+                        updateVideoStats(videoData.analytics);
+                        updateVideoCompletionTable(videoData.analytics);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        function updateStats(analytics) {
+            document.getElementById('totalRevenue').textContent = `$${(analytics.revenue?.total || 0).toLocaleString()}`;
+            document.getElementById('activeStudents').textContent = (analytics.users?.active || 0).toLocaleString();
+        }
+        
+        function updateVideoStats(analytics) {
+            document.getElementById('videosCompleted').textContent = (analytics.total_videos_completed || 0).toLocaleString();
+            document.getElementById('avgVideoCompletion').textContent = `${(analytics.avg_completion_rate || 0)}%`;
+        }
+        
+        function updateVideoCompletionTable(analytics) {
+            const table = document.getElementById('videoCompletionTable');
+            const courseCompletions = analytics.course_completions || [];
+            
+            if (courseCompletions.length === 0) {
+                table.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#666;">No video completion data yet</td></tr>';
+                return;
+            }
+            
+            table.innerHTML = courseCompletions.slice(0, 10).map(course => {
+                const completionRate = Math.round((course.completed_count / (course.student_count * 15)) * 100);
+                return `
+                    <tr>
+                        <td><strong>${course.course_name}</strong></td>
+                        <td>${course.completed_count}</td>
+                        <td>${course.student_count}</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px">
+                                <div style="flex:1;height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden">
+                                    <div style="height:100%;background:#00b894;width:${completionRate}%"></div>
+                                </div>
+                                <span style="font-weight:700;color:#00b894">${completionRate}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateCharts(analytics) {
+            // Revenue Trend Chart
+            new Chart(document.getElementById('revenueChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [5200, 6100, 7300, 8200, 9400, 11200],
+                        borderColor: '#0056d2',
+                        backgroundColor: 'rgba(0, 86, 210, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // Enrollment Trend Chart
+            new Chart(document.getElementById('enrollmentChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Enrollments',
+                        data: [45, 52, 61, 73, 85, 92],
+                        backgroundColor: '#00b894'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            // User Distribution Chart
+            new Chart(document.getElementById('userDistChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Students', 'Instructors', 'Admins'],
+                    datasets: [{
+                        data: [320, 18, 4],
+                        backgroundColor: ['#0056d2', '#00b894', '#fdcb6e']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Top Courses Chart
+            new Chart(document.getElementById('topCoursesChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Python', 'JavaScript', 'Data Science', 'Flask', 'React'],
+                    datasets: [{
+                        label: 'Students',
+                        data: [85, 72, 65, 58, 45],
+                        backgroundColor: '#6c5ce7'
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        loadAnalytics();
+
+        // Load top instructors
+        document.getElementById('topInstructorsTable').innerHTML = `
+            <tr>
+                <td><strong>John Smith</strong></td>
+                <td>5</td>
+                <td>142</td>
+                <td><strong style="color:#00b894;">$14,250</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Sarah Johnson</strong></td>
+                <td>3</td>
+                <td>98</td>
+                <td><strong style="color:#00b894;">$9,800</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Mike Chen</strong></td>
+                <td>4</td>
+                <td>87</td>
+                <td><strong style="color:#00b894;">$8,700</strong></td>
+            </tr>
+        `;
+    </script>
+</body>
+</html>

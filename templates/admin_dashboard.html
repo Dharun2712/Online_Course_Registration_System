@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LearnHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', -apple-system, sans-serif; background: #f7f9fa; color: #1f1f1f; }
+        
+        .dashboard-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #1f1f1f; color: #fff; height: 100vh; position: fixed; left: 0; top: 0; overflow-y: auto; z-index: 1000; }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid #333; }
+        .sidebar-logo { font-size: 24px; font-weight: 700; color: #0056d2; display: flex; align-items: center; gap: 8px; }
+        .sidebar-menu { padding: 16px 0; }
+        .menu-item { padding: 14px 24px; display: flex; align-items: center; gap: 12px; color: #b0b0b0; text-decoration: none; transition: all 0.3s; cursor: pointer; }
+        .menu-item:hover, .menu-item.active { background: #2a2a2a; color: #0056d2; border-left: 3px solid #0056d2; }
+        .menu-item i { width: 20px; text-align: center; }
+        
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; }
+        
+        /* Navbar */
+        .navbar { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 0 40px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .navbar-left h2 { font-size: 24px; font-weight: 700; color: #1f1f1f; }
+        .navbar-right { display: flex; align-items: center; gap: 24px; }
+        .notification-icon { position: relative; cursor: pointer; font-size: 20px; color: #666; }
+        .notification-badge { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; background: #ff4757; border-radius: 50%; font-size: 10px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #0056d2; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; }
+        .btn-logout { padding: 10px 20px; background: #ff4757; color: #fff; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: #e84545; }
+        
+        /* Container */
+        .container { padding: 40px; }
+        
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .stat-card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .stat-title { font-size: 14px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .stat-icon.blue { background: #e8f1fc; color: #0056d2; }
+        .stat-icon.green { background: #e8f8f5; color: #00b894; }
+        .stat-icon.orange { background: #fff5e6; color: #ffa927; }
+        .stat-icon.purple { background: #f3e8ff; color: #764ba2; }
+        .stat-icon.red { background: #ffe8e8; color: #ff4757; }
+        .stat-value { font-size: 36px; font-weight: 700; color: #1f1f1f; margin-bottom: 4px; }
+        .stat-change { font-size: 13px; font-weight: 600; margin-top: 8px; }
+        .stat-change.positive { color: #00b894; }
+        .stat-change.negative { color: #ff4757; }
+        
+        /* Charts */
+        .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 40px; }
+        .chart-card { background: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .chart-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #1f1f1f; }
+        .chart-card p { color: #666; margin-bottom: 24px; }
+        .chart-container { position: relative; height: 300px; }
+        
+        /* Tables */
+        .table-card { background: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 40px; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .table-header h3 { font-size: 20px; font-weight: 700; color: #1f1f1f; }
+        .search-box { position: relative; }
+        .search-box input { padding: 10px 36px 10px 16px; border: 2px solid #e0e0e0; border-radius: 4px; font-size: 14px; width: 300px; }
+        .search-box input:focus { outline: none; border-color: #0056d2; }
+        .search-box i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #666; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { text-align: left; padding: 16px; background: #f7f9fa; font-weight: 700; color: #1f1f1f; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 16px; border-bottom: 1px solid #e0e0e0; }
+        .data-table tr:hover { background: #f7f9fa; }
+        .user-cell { display: flex; align-items: center; gap: 12px; }
+        .user-avatar-sm { width: 40px; height: 40px; border-radius: 50%; background: #0056d2; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+        .user-info h4 { font-size: 15px; font-weight: 600; color: #1f1f1f; margin-bottom: 2px; }
+        .user-info p { font-size: 13px; color: #666; margin: 0; }
+        .badge { padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge.student { background: #e8f1fc; color: #0056d2; }
+        .badge.instructor { background: #fff5e6; color: #ffa927; }
+        .badge.admin { background: #f3e8ff; color: #764ba2; }
+        .badge.active { background: #e8f8f5; color: #00b894; }
+        .badge.inactive { background: #ffe8e8; color: #ff4757; }
+        .action-btns { display: flex; gap: 8px; }
+        .btn-icon { width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; background: #f7f9fa; color: #666; }
+        .btn-icon:hover { background: #0056d2; color: #fff; }
+        .btn-icon.delete:hover { background: #ff4757; }
+        
+        @media (max-width: 1200px) { .charts-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .navbar { padding: 0 20px; }
+            .container { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .search-box input { width: 200px; }
+            .data-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo"><i class="fas fa-graduation-cap"></i> LearnHub</div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/admin/dashboard" class="menu-item active"><i class="fas fa-home"></i><span>Dashboard</span></a>
+                <a href="/admin/users" class="menu-item"><i class="fas fa-users"></i><span>Users</span></a>
+                <a href="/admin/courses" class="menu-item"><i class="fas fa-book"></i><span>Courses</span></a>
+                <a href="/admin/enrollments" class="menu-item"><i class="fas fa-user-graduate"></i><span>Enrollments</span></a>
+                <a href="/admin/payments" class="menu-item"><i class="fas fa-dollar-sign"></i><span>Payments</span></a>
+                <a href="/admin/analytics" class="menu-item"><i class="fas fa-chart-bar"></i><span>Analytics</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <nav class="navbar">
+                <div class="navbar-left"><h2>Admin Dashboard</h2></div>
+                <div class="navbar-right">
+                    <div class="notification-icon"><i class="fas fa-bell"></i><span class="notification-badge">5</span></div>
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </nav>
+
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Users</span>
+                            <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 12% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Courses</span>
+                            <div class="stat-icon orange"><i class="fas fa-book"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalCourses">0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 8% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Revenue</span>
+                            <div class="stat-icon green"><i class="fas fa-dollar-sign"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalRevenue">$0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 23% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Enrollments</span>
+                            <div class="stat-icon purple"><i class="fas fa-user-graduate"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalEnrollments">0</div>
+                        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 15% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Pending Approvals</span>
+                            <div class="stat-icon red"><i class="fas fa-exclamation-circle"></i></div>
+                        </div>
+                        <div class="stat-value" id="pendingApprovals">0</div>
+                        <div class="stat-change negative"><i class="fas fa-clock"></i> Needs attention</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Revenue Overview</h3>
+                        <p>Monthly revenue breakdown</p>
+                        <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>User Distribution</h3>
+                        <p>Users by role</p>
+                        <div class="chart-container"><canvas id="userChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Recent Users</h3>
+                        <div class="search-box">
+                            <input type="text" placeholder="Search users...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>User</th><th>Role</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="5" style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-spinner fa-spin"></i> Loading users...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>Recent Courses</h3>
+                        <div class="search-box">
+                            <input type="text" placeholder="Search courses...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Course</th><th>Instructor</th><th>Students</th><th>Revenue</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="coursesTableBody">
+                            <tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-spinner fa-spin"></i> Loading courses...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        const user = JSON.parse(localStorage.getItem('user_data') || '{}');
+
+        if (!token || !user.role || String(user.role).toLowerCase() !== 'admin') {
+            alert('Access denied. Admin privileges required.');
+            window.location.href = '/login';
+        }
+
+        document.getElementById('userAvatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
+
+        function logout() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_data');
+            window.location.href = '/login';
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Fetch real-time statistics
+                const statsResponse = await fetch('/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (statsResponse.ok) {
+                    const data = await statsResponse.json();
+                    if (data.success) {
+                        updateStats(data.stats);
+                    }
+                }
+
+                updateCharts();
+                loadUsers();
+                loadCourses();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalUsers').textContent = stats.total_users || 0;
+            document.getElementById('totalCourses').textContent = stats.total_courses || 0;
+            document.getElementById('totalRevenue').textContent = `$${(stats.total_revenue || 0).toFixed(2)}`;
+            document.getElementById('totalEnrollments').textContent = stats.total_enrollments || 0;
+            document.getElementById('pendingApprovals').textContent = stats.pending_approvals || 0;
+            
+            // Update growth indicators
+            const userGrowth = document.querySelector('.stat-card:nth-child(1) .stat-change');
+            userGrowth.innerHTML = `<i class="fas fa-arrow-${stats.users_growth >= 0 ? 'up' : 'down'}"></i> ${Math.abs(stats.users_growth)}% from last month`;
+            userGrowth.className = `stat-change ${stats.users_growth >= 0 ? 'positive' : 'negative'}`;
+            
+            const courseGrowth = document.querySelector('.stat-card:nth-child(2) .stat-change');
+            courseGrowth.innerHTML = `<i class="fas fa-arrow-${stats.courses_growth >= 0 ? 'up' : 'down'}"></i> ${Math.abs(stats.courses_growth)}% from last month`;
+            courseGrowth.className = `stat-change ${stats.courses_growth >= 0 ? 'positive' : 'negative'}`;
+            
+            const revenueGrowth = document.querySelector('.stat-card:nth-child(3) .stat-change');
+            revenueGrowth.innerHTML = `<i class="fas fa-arrow-${stats.revenue_growth >= 0 ? 'up' : 'down'}"></i> ${Math.abs(stats.revenue_growth)}% from last month`;
+            revenueGrowth.className = `stat-change ${stats.revenue_growth >= 0 ? 'positive' : 'negative'}`;
+            
+            const enrollmentGrowth = document.querySelector('.stat-card:nth-child(4) .stat-change');
+            enrollmentGrowth.innerHTML = `<i class="fas fa-arrow-${stats.enrollments_growth >= 0 ? 'up' : 'down'}"></i> ${Math.abs(stats.enrollments_growth)}% from last month`;
+            enrollmentGrowth.className = `stat-change ${stats.enrollments_growth >= 0 ? 'positive' : 'negative'}`;
+            
+            // Update pending approvals indicator
+            const pendingCard = document.querySelector('.stat-card:nth-child(5) .stat-change');
+            if (stats.pending_approvals > 0) {
+                pendingCard.innerHTML = `<i class="fas fa-exclamation-circle"></i> Needs attention`;
+                pendingCard.className = 'stat-change negative';
+            } else {
+                pendingCard.innerHTML = `<i class="fas fa-check-circle"></i> All clear`;
+                pendingCard.className = 'stat-change positive';
+            }
+        }
+
+        function updateCharts(analytics) {
+            // Revenue chart - placeholder data for now
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const revenueData = [1200, 1900, 3000, 5000, 4200, 6500];
+            
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: revenueData,
+                        borderColor: '#0056d2',
+                        backgroundColor: 'rgba(0, 86, 210, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // User distribution chart - placeholder data
+            const userCtx = document.getElementById('userChart').getContext('2d');
+            new Chart(userCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Students', 'Instructors', 'Admins'],
+                    datasets: [{
+                        data: [150, 25, 3],
+                        backgroundColor: ['#0056d2', '#ffa927', '#764ba2']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.users) {
+                        displayUsers(data.users.slice(0, 10));
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #666;">No users found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'U';
+                const joinDate = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar-sm">${initials}</div>
+                                <div class="user-info">
+                                    <h4>${user.name || 'Unknown'}</h4>
+                                    <p>${user.email || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge ${user.role}">${user.role}</span></td>
+                        <td>${joinDate}</td>
+                        <td><span class="badge ${user.is_active ? 'active' : 'inactive'}">${user.is_active ? 'Active' : 'Inactive'}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon delete" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadCourses() {
+            try {
+                const response = await fetch('/api/admin/courses?page=1&per_page=10', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.courses) {
+                        displayCourses(data.courses);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+
+        function displayCourses(courses) {
+            const tbody = document.getElementById('coursesTableBody');
+            
+            if (courses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">No courses found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = courses.map(course => `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <h4>${course.title || 'Untitled Course'}</h4>
+                            <p>${course.category || 'General'}</p>
+                        </div>
+                    </td>
+                    <td>${course.instructor_name || 'Unknown'}</td>
+                    <td>${course.enrolled_count || 0}</td>
+                    <td>$${(course.price * (course.enrolled_count || 0)).toFixed(2)}</td>
+                    <td><span class="badge ${course.is_published ? 'active' : 'inactive'}">${course.is_published ? 'Published' : 'Draft'}</span></td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+                            <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        loadDashboardData();
+    </script>
+</body>
+</html>

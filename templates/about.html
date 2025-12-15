@@ -136,10 +136,10 @@ footer a:hover {text-decoration: underline;}
 <header>
   <div class="logo">CourseHub</div>
   <nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="course_details.html">Courses</a>
-    <a href="about.html" class="active">About</a>
-    <a href="login.html" class="login-btn">Join</a>
+    <a href="/">Home</a>
+    <a href="/courses">Courses</a>
+    <a href="/about" class="active">About</a>
+    <a href="/login" class="login-btn" id="authBtn">Join</a>
   </nav>
 </header>
 
@@ -216,12 +216,23 @@ footer a:hover {text-decoration: underline;}
 <footer>
   <p>© 2025 CourseHub | Empowering Education for Everyone</p>
   <p>
-    <a href="index.html">Home</a> | 
-    <a href="course_details.html">Courses</a> | 
-    <a href="about.html">About</a> | 
-    <a href="login.html">Join</a>
+    <a href="/">Home</a> | 
+    <a href="/courses">Courses</a> | 
+    <a href="/about">About</a> | 
+    <a href="/login">Join</a>
   </p>
 </footer>
+
+<script src="/static/js/api-client.js"></script>
+<script>
+// Check authentication and update UI
+if (api.isAuthenticated()) {
+  const user = api.getUser();
+  document.getElementById('authBtn').textContent = user.name;
+  document.getElementById('authBtn').href = user.role === 'student' ? '/student/dashboard' : 
+                                             user.role === 'instructor' ? '/instructor/dashboard' : '/admin/dashboard';
+}
+</script>
 
 </body>
 </html>

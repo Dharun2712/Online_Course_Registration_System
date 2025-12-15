@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Dashboard - Instructor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1a1a1a; margin-bottom: 10px; }
+        h2 { color: #333; margin: 30px 0 15px; border-bottom: 2px solid #0056d2; padding-bottom: 10px; }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #0056d2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        button {
+            background: #0056d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover { background: #004bb5; }
+        button.secondary { background: #6c757d; }
+        button.secondary:hover { background: #5a6268; }
+        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status.ok { background: #28a745; color: white; }
+        .status.fail { background: #dc3545; color: white; }
+        #log { max-height: 400px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Instructor Dashboard Debugger</h1>
+        <p style="color:#666;margin-bottom:30px">This page helps diagnose why the instructor dashboard isn't showing courses</p>
+
+        <h2>1️⃣ Authentication Status</h2>
+        <div id="authStatus"></div>
+
+        <h2>2️⃣ Local Storage Contents</h2>
+        <div id="storageInfo"></div>
+
+        <h2>3️⃣ Test API Call</h2>
+        <button onclick="testAPI()">🧪 Test Dashboard API</button>
+        <button onclick="testLogin()" class="secondary">🔑 Test Login & Retry</button>
+        <div id="apiResult"></div>
+
+        <h2>4️⃣ Console Log</h2>
+        <div id="log"></div>
+
+        <h2>5️⃣ Actions</h2>
+        <button onclick="clearStorage()">🗑️ Clear Storage & Logout</button>
+        <button onclick="location.href='/instructor/dashboard'" class="secondary">📊 Go to Dashboard</button>
+        <button onclick="location.href='/login'">🔑 Go to Login</button>
+    </div>
+
+    <script>
+        const log = (msg, type = 'info') => {
+            const logDiv = document.getElementById('log');
+            const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#0056d2';
+            logDiv.innerHTML += `<div style="color:${color};padding:5px;border-bottom:1px solid #eee">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+
+        // Check authentication
+        function checkAuth() {
+            log('Checking authentication...');
+            const authToken = localStorage.getItem('auth_token');
+            const legacyToken = localStorage.getItem('token');
+            const userData = localStorage.getItem('user_data');
+            const legacyUser = localStorage.getItem('user');
+
+            let html = '';
+            
+            // Token status
+            if (authToken || legacyToken) {
+                html += '<div class="info-box success">✅ Token found: <span class="status ok">OK</span></div>';
+                log('Token found', 'success');
+            } else {
+                html += '<div class="info-box error">❌ No token found: <span class="status fail">FAIL</span></div>';
+                log('No token found', 'error');
+            }
+
+            // User data status
+            if (userData || legacyUser) {
+                html += '<div class="info-box success">✅ User data found: <span class="status ok">OK</span></div>';
+                log('User data found', 'success');
+                
+                try {
+                    const user = JSON.parse(userData || legacyUser);
+                    html += `<div class="info-box">
+                        <strong>User Info:</strong><br>
+                        Name: ${user.name || 'N/A'}<br>
+                        Email: ${user.email || 'N/A'}<br>
+                        Role: ${user.role || 'N/A'}
+                    </div>`;
+                    log(`User: ${user.name} (${user.role})`, 'success');
+                } catch (e) {
+                    html += '<div class="info-box error">⚠️ User data exists but is corrupted</div>';
+                    log('User data corrupted', 'error');
+                }
+            } else {
+                html += '<div class="info-box error">❌ No user data found: <span class="status fail">FAIL</span></div>';
+                log('No user data found', 'error');
+            }
+
+            document.getElementById('authStatus').innerHTML = html;
+        }
+
+        // Show storage contents
+        function showStorage() {
+            log('Reading localStorage...');
+            let html = '<pre>';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `${key}: ${value.substring(0, 100)}${value.length > 100 ? '...' : ''}\n`;
+            }
+            html += '</pre>';
+            document.getElementById('storageInfo').innerHTML = html;
+            log(`Found ${localStorage.length} items in storage`);
+        }
+
+        // Test API
+        async function testAPI() {
+            log('Testing API call...');
+            const apiResult = document.getElementById('apiResult');
+            apiResult.innerHTML = '<div class="info-box">🔄 Loading...</div>';
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+            
+            if (!token) {
+                apiResult.innerHTML = '<div class="info-box error">❌ Cannot test API: No token found. Please login first.</div>';
+                log('API test failed: No token', 'error');
+                return;
+            }
+
+            try {
+                log('Calling /api/instructor/dashboard...');
+                const response = await fetch('/api/instructor/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                log(`Response status: ${response.status}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    apiResult.innerHTML = `<div class="info-box error">
+                        ❌ API Error (${response.status}): <span class="status fail">FAIL</span>
+                        <pre>${errorText}</pre>
+                    </div>`;
+                    log(`API error: ${response.status}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                log(`Courses found: ${data.courses ? data.courses.length : 0}`, 'success');
+                
+                apiResult.innerHTML = `<div class="info-box success">
+                    ✅ API Call Successful: <span class="status ok">OK</span><br>
+                    Courses found: <strong>${data.courses ? data.courses.length : 0}</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                apiResult.innerHTML = `<div class="info-box error">
+                    💥 JavaScript Error: <span class="status fail">FAIL</span>
+                    <pre>${error.message}\n${error.stack}</pre>
+                </div>`;
+                log(`JavaScript error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test login
+        async function testLogin() {
+            log('Testing login...');
+            const apiResult = document.getElementById('apiResult');
+            apiResult.innerHTML = '<div class="info-box">🔄 Logging in...</div>';
+
+            try {
+                log('Calling /api/auth/login...');
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'instructor@gmail.com',
+                        password: '123456'
+                    })
+                });
+
+                log(`Login response: ${response.status}`);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    apiResult.innerHTML = `<div class="info-box error">
+                        ❌ Login Failed (${response.status}):
+                        <pre>${errorText}</pre>
+                    </div>`;
+                    log(`Login failed: ${response.status}`, 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                log('Login successful', 'success');
+
+                if (data.success && data.token) {
+                    // Save to localStorage
+                    localStorage.setItem('auth_token', data.token);
+                    localStorage.setItem('user_data', JSON.stringify(data.user));
+                    // Legacy keys for backward compatibility
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    log('Token saved to localStorage', 'success');
+                    
+                    apiResult.innerHTML = `<div class="info-box success">
+                        ✅ Login Successful!<br>
+                        Token saved. Now retesting API...
+                    </div>`;
+
+                    // Wait a bit then test API
+                    setTimeout(() => {
+                        checkAuth();
+                        showStorage();
+                        testAPI();
+                    }, 500);
+                } else {
+                    apiResult.innerHTML = '<div class="info-box error">❌ Login response invalid</div>';
+                    log('Login response invalid', 'error');
+                }
+            } catch (error) {
+                apiResult.innerHTML = `<div class="info-box error">
+                    💥 Error: ${error.message}
+                </div>`;
+                log(`Login error: ${error.message}`, 'error');
+            }
+        }
+
+        // Clear storage
+        function clearStorage() {
+            if (confirm('This will log you out. Continue?')) {
+                localStorage.clear();
+                log('Storage cleared', 'success');
+                location.reload();
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Page loaded');
+            checkAuth();
+            showStorage();
+        });
+    </script>
+</body>
+</html>

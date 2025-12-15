@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Fix - Instructor Dashboard</title>
+    <script>
+        // Immediately login and redirect
+        (async function() {
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'instructor@gmail.com',
+                        password: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.token) {
+                    localStorage.setItem('auth_token', data.token);
+                    localStorage.setItem('user_data', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = '/instructor/dashboard';
+                } else {
+                    document.body.innerHTML = '<h1>Login failed. Go to <a href="/login">Login Page</a></h1>';
+                }
+            } catch (e) {
+                document.body.innerHTML = '<h1>Error: ' + e.message + '</h1>';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <p>Logging in...</p>
+</body>
+</html>
