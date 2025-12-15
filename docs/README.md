@@ -1176,7 +1176,7 @@ If you find this project helpful, please consider:
 
 ### Need Help?
 
-- 📧 **Email:** support@coursehub.com
+- 📧 **Email:** dharunkumarm200@gmail.com
 - 💬 **Discord:** [Join our community](https://discord.gg/coursehub)
 - 🐛 **Issues:** [GitHub Issues](https://github.com/Dharun2712/Online_Course_Registration_System/issues)
 - 📖 **Docs:** [Full Documentation](docs/README.md)
