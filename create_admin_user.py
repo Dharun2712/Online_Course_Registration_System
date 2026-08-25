@@ -1,9 +1,8 @@
-from pymongo import MongoClient
+from db_connection import get_database
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['online_course_platform']
+db = get_database(allow_mutation=True)
 
 admin_user = {
     'name': 'Admin User',
@@ -23,4 +22,3 @@ else:
     result = db.users.insert_one(admin_user)
     print('Admin created! Email: admin@learnhub.com, Password: admin123')
 
-client.close()

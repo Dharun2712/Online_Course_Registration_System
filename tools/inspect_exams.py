@@ -1,8 +1,7 @@
-from pymongo import MongoClient
+from db_connection import get_database
 from pprint import pprint
 
-client = MongoClient('mongodb://localhost:27017')
-db = client['online_course_platform']
+db = get_database()
 exams = list(db.exams.find().sort('created_at', -1).limit(10))
 print('Found', len(exams), 'exams')
 for e in exams:

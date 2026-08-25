@@ -6,10 +6,10 @@ load_dotenv()
 
 class Config:
     """Base configuration class"""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
-    MONGO_URI = os.getenv('MONGO_URI')
+    SECRET_KEY = os.getenv('JWT_SECRET_KEY') or os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    MONGO_URI = os.getenv('MONGO_URI') or os.getenv('CUSTOMCONNSTR_MONGO_URI')
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-    DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
+    DATABASE_NAME = os.getenv('MONGO_DB_NAME') or os.getenv('DATABASE_NAME', 'online_course_platform')
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '')
     
     # JWT Configuration

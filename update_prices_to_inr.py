@@ -2,12 +2,11 @@
 Script to update course prices to Indian Rupees
 Average prices: ₹500 - ₹2000
 """
-from pymongo import MongoClient
+from db_connection import get_database
 
 try:
     # Connect to MongoDB
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['online_course_platform']
+    db = get_database(allow_mutation=True)
     
     # Price mapping based on level
     price_mapping = {
@@ -46,7 +45,6 @@ try:
     print(f"   Advanced: ₹1,499")
     print(f"   All Levels: ₹799")
     
-    client.close()
     
 except Exception as e:
     print(f"❌ Error: {str(e)}")

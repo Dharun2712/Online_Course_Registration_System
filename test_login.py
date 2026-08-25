@@ -8,7 +8,7 @@ import json
 # Test Admin Login
 print("Testing Admin Login...")
 response = requests.post(
-    'http://localhost:5000/api/auth/login',
+    'http://localhost:3000/api/auth/login',
     json={
         'email': 'admin@gmail.com',
         'password': 'admin@123'
@@ -24,7 +24,7 @@ print("\n" + "="*60 + "\n")
 # Test Instructor Login
 print("Testing Instructor Login...")
 response = requests.post(
-    'http://localhost:5000/api/auth/login',
+    'http://localhost:3000/api/auth/login',
     json={
         'email': 'instructor@gmail.com',
         'password': 'instructor@123'

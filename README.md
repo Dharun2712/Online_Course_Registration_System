@@ -608,6 +608,8 @@ Create a `.env` file in the root directory:
 ```env
 # MongoDB Configuration
 MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/online_course_platform?retryWrites=true&w=majority
+CUSTOMCONNSTR_MONGO_URI=
+MONGO_DB_NAME=online_course_platform
 DATABASE_NAME=online_course_platform
 
 # Groq AI Configuration
@@ -615,6 +617,7 @@ GROQ_API_KEY=your_groq_api_key_here
 
 # Security
 SECRET_KEY=your_super_secret_key_change_in_production
+JWT_SECRET_KEY=
 
 # Application Settings
 FLASK_ENV=development
@@ -1005,11 +1008,19 @@ FLASK_ENV=production
 FLASK_DEBUG=false
 MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/online_course_platform?retryWrites=true&w=majority
 DATABASE_NAME=online_course_platform
+MONGO_DB_NAME=online_course_platform
 SECRET_KEY=<long-random-value>
+JWT_SECRET_KEY=<optional-separate-jwt-secret>
 GROQ_API_KEY=<optional-groq-key>
 ```
 
-Do not set `ALLOW_DB_INIT` in Azure during normal deployments. The GitHub Actions workflow deploys on pushes to `main` and requires the repository secret `AZUREAPPSERVICE_PUBLISHPROFILE`.
+Set `MONGO_URI` as an App Service application setting. If using Azure Connection Strings instead, name it `MONGO_URI`; the application also accepts the generated `CUSTOMCONNSTR_MONGO_URI` variable. Use the existing database user and database; no initialization script runs during deployment.
+
+In MongoDB Atlas, allow the App Service outbound IP addresses under Network Access. For a quick temporary test, Atlas can allow `0.0.0.0/0`, but a restricted list is preferred for production.
+
+Test the deployment with `https://coursehub.azurewebsites.net/api/health`. A healthy response reports `"database": "connected"`. Test login with a `POST` request to `/api/auth/login` using an existing user; the response token is then sent as `Authorization: Bearer <token>`. View startup and application errors in App Service > Monitoring > Log stream.
+
+Do not set `ALLOW_DB_INIT` or `ALLOW_DB_MUTATIONS` in Azure during normal deployments. The GitHub Actions workflow deploys on pushes to `main` and requires the repository secret `AZUREAPPSERVICE_PUBLISHPROFILE`.
 
 ### Docker Deployment
 

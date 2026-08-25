@@ -17,7 +17,7 @@ login_data = {
 }
 
 try:
-    response = requests.post('http://localhost:5000/api/auth/login', json=login_data)
+    response = requests.post('http://localhost:3000/api/auth/login', json=login_data)
     print(f"   Status: {response.status_code}")
     
     if response.status_code == 200:
@@ -37,7 +37,7 @@ try:
                 'Content-Type': 'application/json'
             }
             
-            dashboard_response = requests.get('http://localhost:5000/api/instructor/dashboard', headers=headers)
+            dashboard_response = requests.get('http://localhost:3000/api/instructor/dashboard', headers=headers)
             print(f"   Status: {dashboard_response.status_code}")
             
             if dashboard_response.status_code == 200:

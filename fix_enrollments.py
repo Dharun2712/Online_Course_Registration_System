@@ -1,12 +1,11 @@
 """
 Fix enrollment data types - convert ObjectId to strings for student_id and course_id
 """
-from pymongo import MongoClient
+from db_connection import get_database
 from bson import ObjectId
 
 # Connect to MongoDB
-client = MongoClient('localhost', 27017)
-db = client['online_course_platform']
+db = get_database(allow_mutation=True)
 
 # Get all enrollments
 enrollments = db.enrollments.find()
@@ -44,5 +43,4 @@ enrollments_after = list(db.enrollments.find({}, {'_id': 1, 'student_id': 1, 'co
 for e in enrollments_after:
     print(f"Enrollment {e['_id']}: student_id type={type(e['student_id'])}, course_id type={type(e['course_id'])}")
 
-client.close()
 print("\nDone!")

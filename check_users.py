@@ -1,11 +1,10 @@
 """
 Check users and their roles
 """
-from pymongo import MongoClient
+from db_connection import get_database
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['online_course_platform']
+db = get_database()
 
 print("=== Users in Database ===\n")
 

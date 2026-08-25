@@ -5,7 +5,7 @@ import requests
 import json
 
 # First, login as instructor
-login_url = "http://localhost:5000/api/auth/login"
+login_url = "http://localhost:3000/api/auth/login"
 login_data = {
     "email": "instructor@gmail.com",
     "password": "123456"
@@ -25,7 +25,7 @@ if response.status_code == 200:
     
     # Now test dashboard endpoint
     print("\n=== Testing Dashboard Endpoint ===")
-    dashboard_url = "http://localhost:5000/api/instructor/dashboard"
+    dashboard_url = "http://localhost:3000/api/instructor/dashboard"
     headers = {
         "Authorization": f"Bearer {token}"
     }

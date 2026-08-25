@@ -2,7 +2,7 @@
 Verify default users in database
 """
 
-from pymongo import MongoClient
+from db_connection import get_database
 from werkzeug.security import check_password_hash
 import os
 from dotenv import load_dotenv
@@ -11,10 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB connection
-MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
-DATABASE_NAME = os.getenv('DATABASE_NAME', 'course_system')
-client = MongoClient(MONGO_URI)
-db = client[DATABASE_NAME]
+DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
+db = get_database()
 
 def verify_users():
     """Verify default admin and instructor accounts"""
@@ -70,5 +68,3 @@ if __name__ == "__main__":
         verify_users()
     except Exception as e:
         print(f"Error: {str(e)}")
-    finally:
-        client.close()

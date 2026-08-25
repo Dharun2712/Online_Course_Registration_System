@@ -617,7 +617,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # MongoDB Configuration
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/online_course_platform?retryWrites=true&w=majority
 DATABASE_NAME=online_course_platform
 
 # Groq AI Configuration
@@ -628,7 +628,8 @@ SECRET_KEY=your_super_secret_key_change_in_production
 
 # Application Settings
 FLASK_ENV=development
-DEBUG=True
+FLASK_ENV=development
+FLASK_DEBUG=true
 ```
 
 > 💡 **Tip:** Check `.env.example` for a template
@@ -670,7 +671,7 @@ chmod +x start.sh
 Open your browser and navigate to:
 
 ```
-http://localhost:5000
+http://localhost:3000
 ```
 
 ---

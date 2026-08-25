@@ -1,18 +1,13 @@
 from dotenv import load_dotenv
 import os
-from pymongo import MongoClient
+from db_connection import get_database
 load_dotenv()
-uri = os.getenv('MONGO_URI')
-if not uri:
-    print('No MONGO_URI set')
-    exit(1)
-client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 try:
-    client.server_info()
+    db = get_database()
+    db.client.server_info()
 except Exception as e:
-    print('Mongo connect error:', e)
+    print('Mongo connect error:', type(e).__name__)
     exit(1)
-db = client[os.getenv('DATABASE_NAME','online_course_platform')]
 print('DB connected. Collections:', db.list_collection_names())
 count = db.courses.count_documents({})
 print('Total courses:', count)

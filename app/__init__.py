@@ -1,8 +1,8 @@
 from flask import Flask, render_template
 from flask_cors import CORS
-from pymongo import MongoClient
 import os
 from app.config import config
+from db_connection import get_database
 
 def create_app(config_name='default'):
     """Flask application factory"""
@@ -19,18 +19,18 @@ def create_app(config_name='default'):
 
     mongo_uri = app.config.get('MONGO_URI')
     if not mongo_uri and config_name == 'production':
-        raise RuntimeError('MONGO_URI must be configured in production')
-    if not mongo_uri:
-        mongo_uri = 'mongodb://localhost:27017'
+        raise RuntimeError('MONGO_URI or CUSTOMCONNSTR_MONGO_URI must be configured in production')
 
     try:
-        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
-        client.server_info()
-        db = client[app.config['DATABASE_NAME']]
-        app.db = db
-        print(f"Connected to MongoDB database: {app.config['DATABASE_NAME']}")
+        app.db = get_database()
+        app.db.client.server_info()
+        print(f"MONGO_URI configured: {'YES' if mongo_uri else 'NO'}")
+        print(f"MongoDB database: {app.config['DATABASE_NAME']}")
+        print("MongoDB connection: SUCCESS")
     except Exception as error:
-        print(f"MongoDB connection failed for configured database: {error}")
+        print(f"MONGO_URI configured: {'YES' if mongo_uri else 'NO'}")
+        print(f"MongoDB database: {app.config['DATABASE_NAME']}")
+        print(f"MongoDB connection: FAILED ({type(error).__name__})")
         app.db = None
     
     # Register blueprints
@@ -47,6 +47,24 @@ def create_app(config_name='default'):
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
     app.register_blueprint(payment_bp, url_prefix='/api/payment')
     app.register_blueprint(ai_bp, url_prefix='/api/ai')
+
+    @app.route('/api/health')
+    def health():
+        """Report application and database availability without exposing credentials."""
+        database_status = 'disconnected'
+        if app.db is not None:
+            try:
+                app.db.client.admin.command('ping')
+                database_status = 'connected'
+            except Exception:
+                database_status = 'disconnected'
+
+        healthy = database_status == 'connected'
+        return {
+            'success': healthy,
+            'status': 'healthy' if healthy else 'unhealthy',
+            'database': database_status
+        }, 200 if healthy else 503
     
     # HTML routes (serving existing HTML files)
     @app.route('/')

@@ -3,7 +3,7 @@ Script to create default admin and instructor accounts
 Run this once to set up default users
 """
 
-from pymongo import MongoClient
+from db_connection import get_database
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 import os
@@ -13,13 +13,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB connection
-MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
-DATABASE_NAME = os.getenv('DATABASE_NAME', 'course_system')
-client = MongoClient(MONGO_URI)
-db = client[DATABASE_NAME]
+db = get_database(allow_mutation=True)
+DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
 
 print(f"📡 Connecting to MongoDB database: {DATABASE_NAME}")
-print(f"🔗 URI: {MONGO_URI[:30]}...")
+print("🔗 URI: configured by environment")
 print()
 
 def create_default_users():
@@ -99,5 +97,3 @@ if __name__ == "__main__":
         create_default_users()
     except Exception as e:
         print(f"Error creating default users: {str(e)}")
-    finally:
-        client.close()

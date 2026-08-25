@@ -1,12 +1,11 @@
 """
 Quick script to check instructor data in MongoDB
 """
-from pymongo import MongoClient
+from db_connection import get_database
 from bson import ObjectId
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['online_course_platform']
+db = get_database()
 
 print("=" * 60)
 print("CHECKING INSTRUCTOR DATA")

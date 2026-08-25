@@ -94,17 +94,17 @@ def check_directory_structure():
 def check_mongodb_connection():
     """Test MongoDB connection"""
     try:
-        from pymongo import MongoClient
         from dotenv import load_dotenv
+        from db_connection import get_database
         load_dotenv()
         
-        mongo_uri = os.getenv('MONGO_URI')
+        mongo_uri = os.getenv('MONGO_URI') or os.getenv('CUSTOMCONNSTR_MONGO_URI')
         if not mongo_uri:
             print("❌ MongoDB - MONGO_URI not set in .env")
             return False
         
-        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
-        client.server_info()
+        database = get_database()
+        database.client.server_info()
         print("✅ MongoDB - Connection successful")
         client.close()
         return True
@@ -181,7 +181,7 @@ def main():
         print("Next steps:")
         print("1. python scripts/db_init.py  - Initialize database")
         print("2. python run.py              - Start the application")
-        print("3. Visit http://localhost:5000")
+        print("3. Visit http://localhost:3000")
     else:
         print("❌ Some checks failed. Please fix the issues above.")
     print("=" * 60)

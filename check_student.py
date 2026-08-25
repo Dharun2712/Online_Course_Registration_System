@@ -1,11 +1,10 @@
 """
 Check student enrollments
 """
-from pymongo import MongoClient
+from db_connection import get_database
 
 # Connect to MongoDB
-client = MongoClient('localhost', 27017)
-db = client['online_course_platform']
+db = get_database()
 
 # Find student
 student = db.users.find_one({'email': 'dharunkumarm2005@gmail.com'})
@@ -27,4 +26,3 @@ if student:
 else:
     print("Student not found!")
 
-client.close()

@@ -4,7 +4,6 @@ Sets up MongoDB indexes and creates sample data
 """
 import os
 import sys
-from pymongo import MongoClient
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -19,6 +18,7 @@ from app.models.course_model import Course
 from app.models.enrollment_model import Enrollment
 from app.models.payment_model import Payment
 from app.models.progress_model import Progress
+from db_connection import get_database
 
 def init_database():
     """Initialize database with indexes and sample data"""
@@ -27,15 +27,14 @@ def init_database():
         raise RuntimeError('Database initialization is disabled in production. Set ALLOW_DB_INIT=true only for an intentional one-time run.')
     
     # Connect to MongoDB
-    MONGO_URI = os.getenv('MONGO_URI')
+    MONGO_URI = os.getenv('MONGO_URI') or os.getenv('CUSTOMCONNSTR_MONGO_URI')
     DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
 
     if not MONGO_URI:
         raise RuntimeError('MONGO_URI must be configured before initializing the database')
     
     print(f"🔌 Connecting to MongoDB...")
-    client = MongoClient(MONGO_URI)
-    db = client[DATABASE_NAME]
+    db = get_database()
     
     print(f"✅ Connected to database: {DATABASE_NAME}")
     
@@ -187,7 +186,6 @@ def init_database():
     print("  Password: Student@123")
     print("="*60)
     
-    client.close()
 
 if __name__ == "__main__":
     init_database()

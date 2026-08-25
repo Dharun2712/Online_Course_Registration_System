@@ -2,7 +2,7 @@ import requests
 import json
 
 # Login as student
-login_response = requests.post('http://localhost:5000/api/auth/login', json={
+login_response = requests.post('http://localhost:3000/api/auth/login', json={
     'email': 'dharunkumarm2005@gmail.com',
     'password': 'dharun'
 })
@@ -12,7 +12,7 @@ if login_response.status_code == 200:
     
     # Get exams
     exams_response = requests.get(
-        'http://localhost:5000/api/student/exams',
+        'http://localhost:3000/api/student/exams',
         headers={'Authorization': f'Bearer {token}'}
     )
     

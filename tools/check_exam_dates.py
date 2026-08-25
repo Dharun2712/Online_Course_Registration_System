@@ -1,9 +1,8 @@
-from pymongo import MongoClient
+from db_connection import get_database
 from datetime import datetime
 from pprint import pprint
 
-client = MongoClient('mongodb://localhost:27017')
-db = client['online_course_platform']
+db = get_database()
 
 # Get the most recent exam
 exam = db.exams.find_one(sort=[('created_at', -1)])

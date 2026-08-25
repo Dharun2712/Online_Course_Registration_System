@@ -2,13 +2,12 @@
 Create an instructor user for testing
 """
 import sys
-from pymongo import MongoClient
+from db_connection import get_database
 from werkzeug.security import generate_password_hash
 
 # Connect to MongoDB
 try:
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['online_course_platform']
+    db = get_database(allow_mutation=True)
     print("✅ Connected to MongoDB")
 except Exception as e:
     print(f"❌ Failed to connect to MongoDB: {e}")

@@ -1,12 +1,11 @@
 """
 Script to activate the instructor account
 """
-from pymongo import MongoClient
+from db_connection import get_database
 
 try:
     # Connect to MongoDB
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['online_course_platform']
+    db = get_database(allow_mutation=True)
     
     # Activate instructor account
     result = db.users.update_one(
@@ -28,7 +27,5 @@ try:
     else:
         print("❌ User not found with email: instructor@gmail.com")
         
-    client.close()
-    
 except Exception as e:
     print(f"❌ Error: {str(e)}")

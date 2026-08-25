@@ -1,10 +1,9 @@
-from pymongo import MongoClient
+from db_connection import get_database
 from bson import ObjectId
 from datetime import datetime, timedelta
 from pprint import pprint
 
-client = MongoClient('mongodb://localhost:27017')
-db = client['online_course_platform']
+db = get_database(allow_mutation=True)
 
 # Find a course and an instructor to attach the exam to
 course = db.courses.find_one()

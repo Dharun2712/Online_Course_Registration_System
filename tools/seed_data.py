@@ -1,20 +1,18 @@
 from dotenv import load_dotenv
 import os
-from pymongo import MongoClient
+from db_connection import get_database
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 load_dotenv()
-uri = os.getenv('MONGO_URI')
-if not uri:
-    print('No MONGO_URI set')
+if os.getenv('ALLOW_DB_MUTATIONS', '').lower() not in {'1', 'true', 'yes', 'on'}:
+    print('Database mutations are disabled. Set ALLOW_DB_MUTATIONS=true for an intentional run')
     exit(1)
-client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 try:
-    client.server_info()
+    db = get_database(allow_mutation=True)
+    db.client.server_info()
 except Exception as e:
-    print('Mongo connect error:', e)
+    print('Mongo connect error:', type(e).__name__)
     exit(1)
-db = client[os.getenv('DATABASE_NAME','online_course_platform')]
 
 # Create default users
 users = db.users

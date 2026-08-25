@@ -1,7 +1,6 @@
-from pymongo import MongoClient
+from db_connection import get_database
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['online_course_platform']
+db = get_database()
 
 instructors = list(db.users.find({"role": "instructor"}))
 print(f"Total Instructors: {len(instructors)}")
