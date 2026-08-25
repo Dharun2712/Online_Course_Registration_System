@@ -579,8 +579,7 @@ graph TD
 
 Before you begin, ensure you have the following installed:
 
-- ✅ Node.js 18 or higher
-- ✅ npm 9 or higher
+- ✅ Python 3.12 or higher
 - ✅ MongoDB Atlas account (or local MongoDB)
 - ✅ Groq API key ([Get it here](https://console.groq.com))
 - ✅ Git
@@ -597,7 +596,9 @@ cd Online_Course_Registration_System
 #### 2️⃣ Install Dependencies
 
 ```bash
-npm install
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
 #### 3️⃣ Configure Environment Variables
@@ -606,7 +607,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # MongoDB Configuration
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/online_course_platform?retryWrites=true&w=majority
 DATABASE_NAME=online_course_platform
 
 # Groq AI Configuration
@@ -616,8 +617,10 @@ GROQ_API_KEY=your_groq_api_key_here
 SECRET_KEY=your_super_secret_key_change_in_production
 
 # Application Settings
-NODE_ENV=development
-DEBUG=true
+FLASK_ENV=development
+FLASK_DEBUG=true
+PORT=3000
+CORS_ORIGINS=
 ```
 
 > 💡 **Tip:** Check `.env.example` for a template
@@ -625,7 +628,7 @@ DEBUG=true
 #### 4️⃣ Initialize Database
 
 ```bash
-npm run db:init
+python scripts/db_init.py
 ```
 
 This script will:
@@ -637,7 +640,7 @@ This script will:
 #### 5️⃣ Run the Application
 
 ```bash
-npm start
+python run.py
 ```
 
 **Or use the quick start scripts:**
@@ -658,7 +661,7 @@ chmod +x start.sh
 Open your browser and navigate to:
 
 ```
-http://localhost:5000
+http://localhost:3000
 ```
 
 ---
@@ -989,7 +992,24 @@ heroku open
 
 ### Deploy to AWS / Azure / GCP
 
-Detailed deployment guides for each platform are available in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+For Azure App Service, configure the application settings listed below and set the startup command to:
+
+```text
+gunicorn --bind=0.0.0.0:$PORT run:app
+```
+
+Required Azure settings:
+
+```text
+FLASK_ENV=production
+FLASK_DEBUG=false
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/online_course_platform?retryWrites=true&w=majority
+DATABASE_NAME=online_course_platform
+SECRET_KEY=<long-random-value>
+GROQ_API_KEY=<optional-groq-key>
+```
+
+Do not set `ALLOW_DB_INIT` in Azure during normal deployments. The GitHub Actions workflow deploys on pushes to `main` and requires the repository secret `AZUREAPPSERVICE_PUBLISHPROFILE`.
 
 ### Docker Deployment
 

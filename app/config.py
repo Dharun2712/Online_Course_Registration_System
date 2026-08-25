@@ -10,12 +10,13 @@ class Config:
     MONGO_URI = os.getenv('MONGO_URI')
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
     DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '')
     
     # JWT Configuration
     JWT_EXPIRATION_HOURS = 24
     
     # Application settings
-    DEBUG = True
+    DEBUG = os.getenv('FLASK_DEBUG', '').lower() in {'1', 'true', 'yes', 'on'}
     TESTING = False
     
     # Pagination
@@ -28,7 +29,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     """Development configuration"""
-    DEBUG = True
+    DEBUG = os.getenv('FLASK_DEBUG', 'true').lower() in {'1', 'true', 'yes', 'on'}
 
 class ProductionConfig(Config):
     """Production configuration"""

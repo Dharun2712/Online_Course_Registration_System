@@ -23,17 +23,18 @@ echo "Installing dependencies..."
 pip install -r requirements.txt
 echo ""
 
-# Initialize database
-echo "Initializing database..."
-python scripts/db_init.py
-echo ""
+if [ "${INIT_DB:-false}" = "true" ]; then
+    echo "Initializing database..."
+    python scripts/db_init.py
+    echo ""
+fi
 
 # Run the application
 echo "Starting Flask application..."
 echo ""
 echo "=========================================="
 echo " Application will be available at:"
-echo " http://localhost:5000"
+echo " http://localhost:3000"
 echo "=========================================="
 echo ""
 echo "Sample Credentials:"

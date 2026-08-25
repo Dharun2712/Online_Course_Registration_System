@@ -22,10 +22,16 @@ from app.models.progress_model import Progress
 
 def init_database():
     """Initialize database with indexes and sample data"""
+
+    if os.getenv('FLASK_ENV', 'development').lower() == 'production' and os.getenv('ALLOW_DB_INIT', '').lower() not in {'1', 'true', 'yes', 'on'}:
+        raise RuntimeError('Database initialization is disabled in production. Set ALLOW_DB_INIT=true only for an intentional one-time run.')
     
     # Connect to MongoDB
     MONGO_URI = os.getenv('MONGO_URI')
     DATABASE_NAME = os.getenv('DATABASE_NAME', 'online_course_platform')
+
+    if not MONGO_URI:
+        raise RuntimeError('MONGO_URI must be configured before initializing the database')
     
     print(f"🔌 Connecting to MongoDB...")
     client = MongoClient(MONGO_URI)

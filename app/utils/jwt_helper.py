@@ -5,11 +5,13 @@ import jwt
 import os
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import request, jsonify
+from flask import current_app, request, jsonify
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key')
 ALGORITHM = 'HS256'
 EXPIRATION_HOURS = 24
+
+def _secret_key():
+    return current_app.config['SECRET_KEY']
 
 def generate_token(user_data):
     """
@@ -28,7 +30,7 @@ def generate_token(user_data):
         'iat': datetime.utcnow()
     }
     
-    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    token = jwt.encode(payload, _secret_key(), algorithm=ALGORITHM)
     return token
 
 def decode_token(token):
@@ -40,7 +42,7 @@ def decode_token(token):
         Decoded payload or None if invalid
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, _secret_key(), algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
         return None  # Token expired

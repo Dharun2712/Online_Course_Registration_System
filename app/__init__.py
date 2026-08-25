@@ -13,33 +13,25 @@ def create_app(config_name='default'):
     # Load configuration
     app.config.from_object(config[config_name])
     
-    # Enable CORS
-    CORS(app)
-    
-    # MongoDB connection
+    cors_origins = app.config.get('CORS_ORIGINS', '').strip()
+    if cors_origins:
+        CORS(app, origins=[origin.strip() for origin in cors_origins.split(',') if origin.strip()])
+
+    mongo_uri = app.config.get('MONGO_URI')
+    if not mongo_uri and config_name == 'production':
+        raise RuntimeError('MONGO_URI must be configured in production')
+    if not mongo_uri:
+        mongo_uri = 'mongodb://localhost:27017'
+
     try:
-        # Try local MongoDB first for development
-        local_uri = 'mongodb://localhost:27017'
-        print(f"Attempting local MongoDB connection at {local_uri}...")
-        client = MongoClient(local_uri, serverSelectionTimeoutMS=2000)
+        client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
         client.server_info()
         db = client[app.config['DATABASE_NAME']]
         app.db = db
-        print(f"✅ Connected to local MongoDB: {app.config['DATABASE_NAME']}")
-    except Exception as e:
-        print(f"❌ Local MongoDB Connection Error: {e}")
-        # Try Atlas as fallback
-        try:
-            primary_uri = app.config.get('MONGO_URI')
-            print(f"Attempting MongoDB Atlas fallback...")
-            client = MongoClient(primary_uri, serverSelectionTimeoutMS=5000)
-            client.server_info()
-            db = client[app.config['DATABASE_NAME']]
-            app.db = db
-            print(f"✅ Connected to MongoDB Atlas: {app.config['DATABASE_NAME']}")
-        except Exception as e2:
-            print(f"❌ MongoDB Atlas fallback failed: {e2}")
-            app.db = None
+        print(f"Connected to MongoDB database: {app.config['DATABASE_NAME']}")
+    except Exception as error:
+        print(f"MongoDB connection failed for configured database: {error}")
+        app.db = None
     
     # Register blueprints
     from app.routes.auth_routes import auth_bp
@@ -149,9 +141,11 @@ def create_app(config_name='default'):
     def view_certificate(certificate_id):
         """View certificate as HTML page"""
         from app.services.certificate_service import CertificateService
-        from bson import ObjectId
-        
-        cert_service = CertificateService(db)
+
+        if app.db is None:
+            return "Database unavailable", 503
+
+        cert_service = CertificateService(app.db)
         success, certificate = cert_service.get_certificate(certificate_id)
         
         if not success or not certificate:

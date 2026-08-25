@@ -22,17 +22,19 @@ echo Installing dependencies...
 pip install -r requirements.txt
 echo.
 
-REM Initialize database
-echo Initializing database...
-python scripts\db_init.py
-echo.
+REM Initialize database only when explicitly requested.
+if /I "%INIT_DB%"=="true" (
+    echo Initializing database...
+    python scripts\db_init.py
+    echo.
+)
 
 REM Run the application
 echo Starting Flask application...
 echo.
 echo ==========================================
 echo  Application will be available at:
-echo  http://localhost:5000
+echo  http://localhost:3000
 echo ==========================================
 echo.
 echo Sample Credentials:
