@@ -3,7 +3,7 @@
  * Handles all API requests with authentication
  */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = '/api';
 
 class APIClient {
     constructor() {
