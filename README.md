@@ -4,9 +4,9 @@
 
 <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=32&duration=2800&pause=2000&color=6366F1&center=true&vCenter=true&width=940&lines=Welcome+to+CourseHub!;Learn+Anything%2C+Anytime%2C+Anywhere;AI-Powered+Learning+Experience" alt="Typing SVG" />
 
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-4.x-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Azure App Service](https://img.shields.io/badge/Azure-Deployed-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://tinyurl.com/course-hub)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![AI Powered](https://img.shields.io/badge/AI-Groq_Llama-FF6B6B?style=for-the-badge&logo=ai&logoColor=white)](https://groq.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
@@ -63,7 +63,7 @@
 
 </div>
 
-CourseHub is a modern, full-featured Learning Management System (LMS) that bridges the gap between learners and quality education. Built with JavaScript and a Node.js backend, it provides an intuitive platform for students to discover courses, track their progress, and achieve their learning goals with the help of AI-powered assistance.
+CourseHub is a modern, full-featured Learning Management System (LMS) that bridges the gap between learners and quality education. Built with a Python & Flask backend and deployed to Microsoft Azure App Service, it provides an intuitive platform for students to discover courses, track their progress, and achieve their learning goals with the help of AI-powered assistance.
 
 ### 🎯 Key Highlights
 
@@ -541,16 +541,17 @@ graph TD
 
 <div align="center">
 
-### Backend Technologies
+### Backend & Cloud Technologies
 
 | Technology | Purpose | Version |
 |:----------:|:-------:|:-------:|
-| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | Core Language | ES2022 |
-| ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white) | Runtime | 18+ |
-| ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white) | Web Framework | 4.x |
+| ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) | Core Language | 3.12 |
+| ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white) | Web Framework | 3.0.0 |
+| ![Azure](https://img.shields.io/badge/Azure_App_Service-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) | Cloud Deployment | Linux Web App |
 | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white) | Database | 4.6+ |
 | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) | Authentication | 2.8.0 |
 | ![Groq](https://img.shields.io/badge/Groq_AI-FF6B6B?style=for-the-badge&logo=ai&logoColor=white) | AI Engine | Latest |
+| ![Gunicorn](https://img.shields.io/badge/Gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white) | WSGI Server | 21.2.0 |
 
 ### Frontend Technologies
 
@@ -993,15 +994,18 @@ git push heroku main
 heroku open
 ```
 
-### Deploy to AWS / Azure / GCP
+### Deploy to Microsoft Azure App Service
 
-For Azure App Service, configure the application settings listed below and set the startup command to:
+The application is deployed on **Azure App Service** (`coursehub`) via an automated CI/CD pipeline using **GitHub Actions** (`.github/workflows/main_coursehub.yml`).
 
+- **Live URL:** [https://tinyurl.com/course-hub](https://tinyurl.com/course-hub) (Azure: [https://coursehub.azurewebsites.net](https://coursehub.azurewebsites.net))
+- **Health Check Endpoint:** [https://coursehub.azurewebsites.net/api/health](https://coursehub.azurewebsites.net/api/health)
+- **Startup Command:**
 ```text
 gunicorn --bind=0.0.0.0:$PORT run:app
 ```
 
-Required Azure settings:
+#### Required Azure App Service Environment Variables:
 
 ```text
 FLASK_ENV=production
@@ -1011,16 +1015,16 @@ DATABASE_NAME=online_course_platform
 MONGO_DB_NAME=online_course_platform
 SECRET_KEY=<long-random-value>
 JWT_SECRET_KEY=<optional-separate-jwt-secret>
-GROQ_API_KEY=<optional-groq-key>
+GROQ_API_KEY=<your-groq-api-key>
 ```
 
-Set `MONGO_URI` as an App Service application setting. If using Azure Connection Strings instead, name it `MONGO_URI`; the application also accepts the generated `CUSTOMCONNSTR_MONGO_URI` variable. Use the existing database user and database; no initialization script runs during deployment.
+Set `MONGO_URI` as an App Service application setting. If using Azure Connection Strings, name it `MONGO_URI`; the Flask application automatically detects the generated `CUSTOMCONNSTR_MONGO_URI` environment variable as well.
 
-In MongoDB Atlas, allow the App Service outbound IP addresses under Network Access. For a quick temporary test, Atlas can allow `0.0.0.0/0`, but a restricted list is preferred for production.
+#### CI/CD Deployment with GitHub Actions:
+Deployments trigger automatically on push to the `main` branch using OpenID Connect (OIDC) authentication configured with repository secrets (`AZUREAPPSERVICE_CLIENTID_*`, `AZUREAPPSERVICE_TENANTID_*`, `AZUREAPPSERVICE_SUBSCRIPTIONID_*`).
 
-Test the deployment with `https://coursehub.azurewebsites.net/api/health`. A healthy response reports `"database": "connected"`. Test login with a `POST` request to `/api/auth/login` using an existing user; the response token is then sent as `Authorization: Bearer <token>`. View startup and application errors in App Service > Monitoring > Log stream.
-
-Do not set `ALLOW_DB_INIT` or `ALLOW_DB_MUTATIONS` in Azure during normal deployments. The GitHub Actions workflow deploys on pushes to `main` and requires the repository secret `AZUREAPPSERVICE_PUBLISHPROFILE`.
+In MongoDB Atlas, ensure Azure App Service outbound IP addresses are allowed under Network Access (or `0.0.0.0/0` during initial setup).
+Test login with a `POST` request to `/api/auth/login` using an existing user, sending the resulting token as `Authorization: Bearer <token>`. View startup and application errors in App Service > Monitoring > Log stream.
 
 ### Docker Deployment
 
